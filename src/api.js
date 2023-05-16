@@ -1,3 +1,4 @@
+/* eslint-disable no-param-reassign */
 import axios from 'axios';
 
 const baseURL = 'https://kanban-backend-production-d896.up.railway.app/';
@@ -13,8 +14,10 @@ api.interceptors.request.use((config) => {
   if (config.url === '/login' || config.url === '/register') {
     return config;
   }
-  // eslint-disable-next-line no-param-reassign
-  config.headers.Authorization = `Bearer  ${token}`;
+
+  config.headers.Authorization = `Bearer ${token}`;
+  config.headers['Access-Control-Allow-Origin'] = 'https://kanban-frontend-nu.vercel.app';
+
   return config;
 });
 
