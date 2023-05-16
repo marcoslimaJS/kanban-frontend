@@ -19,7 +19,7 @@ function AsideDesktop({ setTheme }) {
   const dispatch = useDispatch();
   const { sidebar, boards, tasks } = useSelector((state) => state);
   const [showModalCreateBoard, setShowModalCreateBoard] = useState(false);
-  const [currentBoardId, setCurrentBoardId] = useState(boards.listBoards[0].id);
+  const [currentBoardId, setCurrentBoardId] = useState(boards.listBoards[0]?.id);
   const isFirstRender = useRef(true);
   const mobile = useMedia('(max-width: 640px)');
 
@@ -37,8 +37,10 @@ function AsideDesktop({ setTheme }) {
   };
 
   useEffect(() => {
-    const firstId = boards.listBoards[0].id;
-    dispatch(boardData(firstId));
+    const firstId = boards.listBoards[0]?.id;
+    if (firstId) {
+      dispatch(boardData(firstId));
+    }
   }, []);
 
   // Refresh no Board caso altere as tasks

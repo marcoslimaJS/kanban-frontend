@@ -74,6 +74,7 @@ const Label = styled.label`
   margin-bottom: 10px;
   font-weight: 700;
   color: ${({ theme }) => theme.textSecundary};
+  font-size: 16px;
   span {
     font-size: 14px;
   }
@@ -83,6 +84,6 @@ const Error = styled.span`
   color: ${({ theme }) => theme.delete};
   position: absolute;
   right: 16px;
-  bottom: 14px;
+  bottom: 34px;
   font-size: 14px;
 `;

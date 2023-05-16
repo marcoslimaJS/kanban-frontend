@@ -8,6 +8,7 @@ import Login from './Components/Login';
 import ProtectedRoute from './Components/helper/ProtectedRoute';
 import Home from './Components/Home';
 import { getAllBoards } from './store/board/boardsActions';
+import Register from './Components/Register';
 
 function App() {
   const [theme, setTheme] = useState(light);
@@ -28,7 +29,7 @@ function App() {
 
   useEffect(() => {
     if (listBoards) {
-      navigate('/home');
+      navigate('/');
     }
   }, [listBoards]);
 
@@ -37,9 +38,10 @@ function App() {
       <Container>
         <GlobalStyle />
         <Routes>
-          <Route path="login/*" element={<Login />} />
+          <Route path="login" element={<Login />} />
+          <Route path="register" element={<Register />} />
           <Route
-            path="home/*"
+            path="/"
             element={(
               <ProtectedRoute>
                 <Home setTheme={setTheme} />

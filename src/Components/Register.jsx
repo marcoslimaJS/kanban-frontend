@@ -2,37 +2,39 @@ import React, { useEffect } from 'react';
 import styled from 'styled-components';
 import { useDispatch, useSelector } from 'react-redux';
 // import { Navigate } from 'react-router-dom';
-import { useNavigate } from 'react-router-dom';
 import { ReactComponent as Logo } from '../assets/logo-dark.svg';
 import { ReactComponent as ImgSVG } from '../assets/scrum-board.svg';
 import Button from './Interactive/Button';
 import Input from './Interactive/Input';
 import useForm from '../Hooks/useForm';
-import { loginUser } from '../store/auth/authActions';
+import { createUser, loginUser } from '../store/auth/authActions';
 import { getAllBoards } from '../store/board/boardsActions';
 
-function Login() {
-  const { listBoards } = useSelector((state) => state.boards);
+function Register() {
   const { user, error } = useSelector((state) => state.auth);
-  const navigate = useNavigate();
 
   const dispatch = useDispatch();
   const username = useForm();
   const password = useForm();
 
-  const handleLogin = (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
     const usernameValidate = username.validate();
     const passwordValidate = password.validate();
     if (usernameValidate && passwordValidate) {
-      dispatch(
-        loginUser({ username: username.value, password: password.value }),
+      const response = await dispatch(
+        createUser({ username: username.value, password: password.value }),
       );
+      if (response.meta.requestStatus === 'fulfilled') {
+        dispatch(
+          loginUser({
+            username: response.payload.username,
+            password: response.payload.password,
+          }),
+        );
+      }
+      console.log(response);
     }
-  };
-
-  const goToRegister = () => {
-    navigate('/register');
   };
 
   useEffect(() => {
@@ -53,12 +55,12 @@ function Login() {
           <ImgSVG />
         </ColumnImg>
         <Content>
-          <Title>Login</Title>
+          <Title>Register</Title>
           <FormLogin onSubmit={handleLogin}>
             <Input
               label="Username"
               id="username"
-              placeHolder="Enter task name"
+              placeHolder="Username"
               {...username}
             />
             <Input
@@ -68,21 +70,17 @@ function Login() {
               {...password}
             />
             <Button bg="white" color="red" type="submit">
-              Login
+              Register
             </Button>
             {error && <Error>{error}</Error>}
           </FormLogin>
-          <SignUp>
-            Don&apos;t have account?
-            <SignUpSpan onClick={goToRegister}> Sing Up</SignUpSpan>
-          </SignUp>
         </Content>
       </Main>
     </Container>
   );
 }
 
-export default Login;
+export default Register;
 
 const Container = styled.section`
   min-height: 100vh;
@@ -130,6 +128,7 @@ const ColumnImg = styled.div`
 
 const Content = styled.div`
   padding: 20px;
+  margin-top: 30px;
   max-width: 450px;
 
   input {
@@ -185,16 +184,4 @@ const Error = styled.p`
   border-radius: 5px;
   box-shadow: rgba(50, 50, 93, 0.25) 0px 6px 12px -2px, rgba(0, 0, 0, 0.3) 0px 3px 7px -3px;
   font-size: 16px;
-  margin-bottom: 16px;
 `;
-
-const SignUp = styled.p`
-  text-align: center;
-  font-size: 18px;
-  span {
-    color: ${({ theme }) => theme.white};
-    cursor: pointer;
-  }
-`;
-
-const SignUpSpan = styled.span``;
