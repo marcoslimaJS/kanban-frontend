@@ -13,7 +13,7 @@ import { getAllBoards } from '../store/board/boardsActions';
 
 function Login() {
   const { listBoards } = useSelector((state) => state.boards);
-  const { user, error } = useSelector((state) => state.auth);
+  const { user, error, loading } = useSelector((state) => state.auth);
   const navigate = useNavigate();
 
   const dispatch = useDispatch();
@@ -67,7 +67,7 @@ function Login() {
               type="password"
               {...password}
             />
-            <Button bg="white" color="red" type="submit">
+            <Button bg="white" color="red" type="submit" loading={loading}>
               Login
             </Button>
             {error && <Error>{error}</Error>}

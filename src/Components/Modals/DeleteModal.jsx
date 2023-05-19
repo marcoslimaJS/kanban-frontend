@@ -1,10 +1,11 @@
 import React from 'react';
 import styled from 'styled-components';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import Modal from './Modal';
 import Button from '../Interactive/Button';
 import { deleteBoard } from '../../store/board/boardsActions';
 import { deleteTask } from '../../store/board/tasksActions';
+import useResponse from '../../Hooks/useResponse';
 
 const getDescriptions = (type, name) => {
   const descriptions = {
@@ -16,6 +17,7 @@ const getDescriptions = (type, name) => {
 
 function DeleteModal({ id, closeModal, data }) {
   const dispatch = useDispatch();
+  const { boards, tasks} = useSelector((state) => state);
   const closeDeleteModal = () => {
     closeModal(false);
   };
@@ -26,11 +28,11 @@ function DeleteModal({ id, closeModal, data }) {
     };
     if (data.type === 'board') {
       const response = await dispatch(deleteBoard({ boardId: id, body }));
-      console.log(response);
+      useResponse({ status: response.meta.requestStatus, type: 'board', result: 'deleted' });
     }
     if (data.type === 'task') {
       const response = await dispatch(deleteTask({ taskId: id, body }));
-      console.log(response);
+      useResponse({ status: response.meta.requestStatus, type: 'task', result: 'deleted' });
     }
     closeDeleteModal();
   };
@@ -49,6 +51,7 @@ function DeleteModal({ id, closeModal, data }) {
             color="white"
             hover="deleteHover"
             fnClick={handleDelete}
+            loading={boards.loading || tasks.loading}
           >
             Delete
           </Button>

@@ -75,9 +75,7 @@ const Label = styled.label`
   margin-bottom: 10px;
   font-weight: 700;
   color: ${({ theme }) => theme.textSecundary};
-  span {
-    font-size: 14px;
-  }
+  font-size: 14px;
 `;
 
 const Error = styled.span`

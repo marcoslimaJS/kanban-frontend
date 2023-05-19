@@ -28,9 +28,9 @@ function Board() {
     if (isDragging) {
       setDropTask(taskId);
       const screenWidth = window.innerWidth;
-      const scrollThreshold = 100;
+      const scrollThreshold = 150;
 
-      if (e.clientX < scrollThreshold + (sidebar ? 360 : 100)) {
+      if (e.clientX < scrollThreshold + (sidebar ? 310 : 10)) {
         // scroll para esquerda
         BoardElement.current.scrollBy({
           left: -150,
@@ -39,10 +39,11 @@ function Board() {
       } else if (e.clientX > screenWidth - scrollThreshold) {
         // scroll para direita
         BoardElement.current.scrollBy({
-          left: 100,
+          left: 200,
           behavior: 'smooth',
         });
       }
+
       const rect = BoardElement.current.getBoundingClientRect();
       console.log(rect);
       console.log(BoardElement.current.scrollLeft);
@@ -54,10 +55,17 @@ function Board() {
       }
     }
   };
+  console.log(position);
+
+  useEffect(() => {
+    console.log('sgsgfgfdgf');
+    setPosition((pos) => pos);
+  }, [BoardElement?.current?.scrollLeft]);
 
   const adjustTaskInColumn = () => {
     const x = sidebar ? position.x + 300 : position.x;
-    const columnsPosition = columnsElement.current.map((column) => {
+    const columns = columnsElement.current.filter((col) => col);
+    const columnsPosition = columns.map((column) => {
       const { right } = column.getBoundingClientRect();
       return { x: right + window.scrollX };
     });
@@ -67,7 +75,7 @@ function Board() {
 
     for (let i = 0; i < columnsPosition.length; i++) {
       if ((x + 0) < columnsPosition[i].x) {
-        columnsElement.current[i].appendChild(taskCurrent);
+        columns[i].appendChild(taskCurrent);
         break;
       }
     }
@@ -182,6 +190,8 @@ const Container = styled.main`
   grid-auto-flow: column;
   gap: 24px;
   overflow: auto;
+  scroll-behavior: smooth;
+  overscroll-behavior-x: contain;
   height: calc(100vh - 90px);
   transition: 700ms all;
   width: ${({ sidebar, mobile }) => (

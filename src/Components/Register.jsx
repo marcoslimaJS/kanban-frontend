@@ -11,7 +11,7 @@ import { createUser, loginUser } from '../store/auth/authActions';
 import { getAllBoards } from '../store/board/boardsActions';
 
 function Register() {
-  const { user, error } = useSelector((state) => state.auth);
+  const { user, error, loading } = useSelector((state) => state.auth);
 
   const dispatch = useDispatch();
   const username = useForm();
@@ -69,7 +69,7 @@ function Register() {
               type="password"
               {...password}
             />
-            <Button bg="white" color="red" type="submit">
+            <Button bg="white" color="red" type="submit" loading={loading}>
               Register
             </Button>
             {error && <Error>{error}</Error>}

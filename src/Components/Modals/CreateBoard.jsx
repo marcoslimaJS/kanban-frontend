@@ -8,12 +8,15 @@ import Button from '../Interactive/Button';
 import Input from '../Interactive/Input';
 import { ReactComponent as Remove } from '../../assets/icon-cross.svg';
 import { createBoard, updateBoard } from '../../store/board/boardsActions';
+import useResponse from '../../Hooks/useResponse';
 
 function CreateBoard({ boardId, closeModal }) {
   const board = boardId && useSelector(({ boards }) => boards.board);
+  const { loading } = useSelector(({ boards }) => boards);
   const dispatch = useDispatch();
   const name = useForm(board?.name);
   const [columns, setColumns] = useState(board?.columns || []);
+  const [status, setStatus] = useState('');
   const closeModalCreateBoard = () => {
     closeModal(false);
   };
@@ -42,8 +45,14 @@ function CreateBoard({ boardId, closeModal }) {
       name: name.value,
       columns,
     };
-    const response = await dispatch(createBoard({ userId: localStorage.getItem('userId'), body }));
-    console.log(response);
+    const response = await dispatch(
+      createBoard({ userId: localStorage.getItem('userId'), body })
+    );
+    useResponse({
+      status: response.meta.requestStatus,
+      type: 'board',
+      result: 'created',
+    });
     closeModalCreateBoard();
   };
 
@@ -54,13 +63,19 @@ function CreateBoard({ boardId, closeModal }) {
       columns,
     };
     const response = await dispatch(updateBoard({ boardId, body }));
-    console.log(response);
+    useResponse({
+      status: response.meta.requestStatus,
+      type: 'board',
+      result: 'updated',
+    });
     closeModalCreateBoard();
   };
 
   return (
     <Modal onClose={closeModalCreateBoard}>
-      <CreateBoardContent onSubmit={!boardId ? handleCreateBoard : handleUpdateBoard}>
+      <CreateBoardContent
+        onSubmit={!boardId ? handleCreateBoard : handleUpdateBoard}
+      >
         <h2>Add New Board</h2>
         <Input
           label="Name"
@@ -90,7 +105,9 @@ function CreateBoard({ boardId, closeModal }) {
             + Add New Column
           </Button>
         </ColumnsContainer>
-        <Button type="submit">{!boardId ? 'Create Board' : 'Save Changes'}</Button>
+        <Button type="submit" loading={loading}>
+          {!boardId ? 'Create Board' : 'Save Changes'}
+        </Button>
       </CreateBoardContent>
     </Modal>
   );
@@ -120,6 +137,7 @@ const ColumnsContainer = styled.div`
     justify-content: space-between;
     margin-bottom: 10px;
     font-weight: 700;
+    font-size: 14px;
     color: ${({ theme }) => theme.textSecundary};
   }
 `;

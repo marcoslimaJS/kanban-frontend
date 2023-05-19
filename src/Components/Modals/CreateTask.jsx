@@ -11,10 +11,12 @@ import Input from '../Interactive/Input';
 import { ReactComponent as Remove } from '../../assets/icon-cross.svg';
 import { createTask, updateTask } from '../../store/board/tasksActions';
 import { getTaskById } from '../../store/board/tasks';
+import useResponse from '../../Hooks/useResponse';
 
 function CreateTask({ taskId, closeModal }) {
   const task = useSelector(({ boards }) => getTaskById(boards.board, taskId));
   const { board } = useSelector((state) => state.boards);
+  const { loading } = useSelector(({ tasks }) => tasks);
   const dispatch = useDispatch();
   const options = board.columns.map(({ name, id }) => ({
     label: name,
@@ -47,7 +49,7 @@ function CreateTask({ taskId, closeModal }) {
     setSubtasks(newValues);
   };
 
-  const handleCreateTask = (e) => {
+  const handleCreateTask = async (e) => {
     e.preventDefault();
     console.log(title.value, description.value, subtasks);
     const body = {
@@ -55,11 +57,18 @@ function CreateTask({ taskId, closeModal }) {
       description: description.value,
       subtasks,
     };
-    dispatch(createTask({ columnId: status.value, body }));
+    const response = await dispatch(
+      createTask({ columnId: status.value, body }),
+    );
+    useResponse({
+      status: response.meta.requestStatus,
+      type: 'task',
+      result: 'created',
+    });
     closeModalCreateTask();
   };
 
-  const handleUpdateTask = (e) => {
+  const handleUpdateTask = async (e) => {
     e.preventDefault();
     const body = {
       title: title.value,
@@ -67,9 +76,12 @@ function CreateTask({ taskId, closeModal }) {
       subtasks,
       columnId: status.value,
     };
-    console.log('update');
-    console.log(body);
-    dispatch(updateTask({ taskId, body }));
+    const response = await dispatch(updateTask({ taskId, body }));
+    useResponse({
+      status: response.meta.requestStatus,
+      type: 'task',
+      result: 'updated',
+    });
     closeModalCreateTask();
   };
 
@@ -77,7 +89,9 @@ function CreateTask({ taskId, closeModal }) {
 
   return (
     <Modal onClose={closeModalCreateTask}>
-      <CreateTaskContent onSubmit={!taskId ? handleCreateTask : handleUpdateTask}>
+      <CreateTaskContent
+        onSubmit={!taskId ? handleCreateTask : handleUpdateTask}
+      >
         <h2>Add New Task</h2>
         <Input
           label="Title"
@@ -120,7 +134,9 @@ function CreateTask({ taskId, closeModal }) {
           value={status}
           setValue={setStatus}
         />
-        <Button type="submit">{!taskId ? 'Create Task' : 'Save Changes'}</Button>
+        <Button type="submit" loading={loading}>
+          {!taskId ? 'Create Task' : 'Save Changes'}
+        </Button>
       </CreateTaskContent>
     </Modal>
   );
@@ -150,6 +166,7 @@ const SubtasksContainer = styled.div`
     justify-content: space-between;
     margin-bottom: 10px;
     font-weight: 700;
+    font-size: 14px;
     color: ${({ theme }) => theme.textSecundary};
   }
 `;

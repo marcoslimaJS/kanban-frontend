@@ -24,7 +24,7 @@ const boardSlice = createSlice({
       })
       .addCase(getAllBoards.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.error.message;
+        state.error = action.error?.message;
       })
 
       .addCase(boardData.pending, (state) => {
@@ -36,7 +36,7 @@ const boardSlice = createSlice({
       })
       .addCase(boardData.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.error.message;
+        state.error = action.error?.message;
       })
 
       .addCase(createBoard.pending, (state) => {
@@ -48,7 +48,7 @@ const boardSlice = createSlice({
       })
       .addCase(createBoard.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.payload.error;
+        state.error = action.payload?.error;
       })
 
       .addCase(updateBoard.pending, (state) => {
@@ -60,7 +60,7 @@ const boardSlice = createSlice({
       })
       .addCase(updateBoard.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.payload.error;
+        state.error = action.payload?.error;
       })
 
       .addCase(deleteBoard.pending, (state) => {
@@ -72,7 +72,7 @@ const boardSlice = createSlice({
       })
       .addCase(deleteBoard.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.payload.error;
+        state.error = action.payload?.error;
       });
   },
 });

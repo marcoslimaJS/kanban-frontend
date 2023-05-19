@@ -1,0 +1,50 @@
+.status {
+  position: fixed;
+  right: 20px;
+  top: 40px;
+  background: #fff;
+  padding: 16px;
+  border-radius: 6px;
+  z-index: 9999999;
+  box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+  font-size: 14px;
+  animation: animeRight 0.5s ease-in-out;
+}
+
+.status::after {
+  content: '';
+  display: block;
+  width: 50%;
+  height: 3px;
+  animation: animeReduce 5s linear;
+  position: relative;
+  top: 6px;
+}
+
+.rejected::after {
+  background: red;
+}
+
+.fulfilled::after {
+  background: #4bb543;
+}
+
+@keyframes animeRight {
+  from {
+    transform: translate3d(90px, 0, 0);
+    opacity: 0;
+  }
+  to {
+    transform: translate3d(0, 0, 0);
+    opacity: 1;
+  }
+}
+
+@keyframes animeReduce {
+  0% {
+    width: 0%;
+  }
+  100% {
+    width: 100%;
+  }
+}

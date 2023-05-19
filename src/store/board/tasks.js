@@ -24,7 +24,7 @@ const taskSlice = createSlice({
       })
       .addCase(createTask.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.error.message;
+        state.error = action.error?.message;
       })
       .addCase(deleteTask.pending, (state) => {
         state.loading = true;
@@ -35,7 +35,7 @@ const taskSlice = createSlice({
       })
       .addCase(deleteTask.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.error.message;
+        state.error = action.error?.message;
       })
 
       .addCase(updateTask.pending, (state) => {
@@ -48,7 +48,7 @@ const taskSlice = createSlice({
       })
       .addCase(updateTask.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.error.message;
+        state.error = action.error?.message;
       });
   },
 });
