@@ -36,3 +36,15 @@ export const updateTask = createAsyncThunk(
     }
   },
 );
+
+export const updateTaskForColumn = createAsyncThunk(
+  'taskUp/updateTaskForColumn',
+  async ({ taskId, body }, { rejectWithValue }) => {
+    try {
+      const response = await api.put(`/taskUp/${taskId}`, body);
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(error.response.data);
+    }
+  },
+);

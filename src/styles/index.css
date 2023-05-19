@@ -1,7 +1,7 @@
 .status {
   position: fixed;
   right: 20px;
-  top: 40px;
+  top: 100px;
   background: #fff;
   padding: 16px;
   border-radius: 6px;
@@ -14,7 +14,7 @@
 .status::after {
   content: '';
   display: block;
-  width: 50%;
+  width: 0%;
   height: 3px;
   animation: animeReduce 5s linear;
   position: relative;

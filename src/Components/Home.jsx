@@ -58,7 +58,7 @@ function Home({ setTheme }) {
             )}
           </>
         )}
-        <Board />
+        <Board showModalEditBoard={setShowModalEditBoard} />
         {sidebar && mobile && (
           <SidebarMobile onClick={hiddenSidebar}>
             <AsideDesktop setTheme={setTheme} />

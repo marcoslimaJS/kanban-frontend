@@ -3,6 +3,7 @@ const light = {
   bgPrimary: '#FFFFFF',
   bgSecundary: '#F4F7FD',
   bgTertiary: 'linear-gradient(180deg, #E9EFFA 0%, rgba(233, 239, 250, 0.5) 100%)',
+  bgTertiaryHover: 'linear-gradient(180deg, #E1E4EA 0%, rgba(165, 191, 234, 0.5) 100%)',
   textPrimary: '#000112',
   textSecundary: '#828FA3',
   lines: '#E4EBFA',

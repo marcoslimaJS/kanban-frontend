@@ -8,7 +8,6 @@ import { ReactComponent as LogoMobile } from '../../assets/logo-mobile.svg';
 import { ReactComponent as ConfigSVG } from '../../assets/icon-vertical-ellipsis.svg';
 import { ReactComponent as ArrowIcon } from '../../assets/icon-chevron-down.svg';
 import Button from '../Interactive/Button';
-import CreateTask from '../Modals/CreateTask';
 import useMedia from '../../Hooks/useMedia';
 import { showSidebar } from '../../store/sidebar';
 

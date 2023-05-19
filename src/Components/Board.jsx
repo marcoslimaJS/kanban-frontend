@@ -1,12 +1,16 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import styled from 'styled-components';
 import ViewTask from './Modals/ViewTask';
 import useMedia from '../Hooks/useMedia';
+import Button from './Interactive/Button';
+import { updateTaskForColumn } from '../store/board/tasksActions';
+import useResponse from '../Hooks/useResponse';
+import Loading from './Interactive/Loading';
 
-function Board() {
+function Board({ showModalEditBoard }) {
   const { board } = useSelector((state) => state.boards);
-  const { sidebar } = useSelector((state) => state);
+  const { sidebar, tasks } = useSelector((state) => state);
   const mobile = useMedia('(max-width: 640px)');
   const BoardElement = useRef(null);
   const columnsElement = useRef([]);
@@ -17,9 +21,19 @@ function Board() {
   const [position, setPosition] = useState(null);
   const [modalViewTask, setModalViewTask] = useState(null);
   const [dropTask, setDropTask] = useState('');
+  const dispatch = useDispatch();
 
   const handleMouseDown = () => {
     setIsDragging(true);
+  };
+
+  const getAllTasksOfBoard = () => {
+    const columns = columnsElement.current.filter((col) => col);
+    const tasks = columns.reduce((accum, column) => {
+      const onlyTask = [...column.children].filter(({ id }) => id);
+      return [...accum, ...onlyTask];
+    }, []);
+    setAllTasks(tasks);
   };
 
   const handleMouseMove = (event, taskId) => {
@@ -28,7 +42,7 @@ function Board() {
     if (isDragging) {
       setDropTask(taskId);
       const screenWidth = window.innerWidth;
-      const scrollThreshold = 150;
+      const scrollThreshold = mobile ? 100 : 150;
 
       if (e.clientX < scrollThreshold + (sidebar ? 310 : 10)) {
         // scroll para esquerda
@@ -48,8 +62,9 @@ function Board() {
       console.log(rect);
       console.log(BoardElement.current.scrollLeft);
       const scroll = BoardElement.current.scrollLeft;
+      const scrollTo = BoardElement.current.scrollTop;
       if (sidebar) {
-        setPosition({ x: e.clientX - 440 + scroll, y: e.clientY - 135 });
+        setPosition({ x: e.clientX - 440 + scroll, y: e.clientY - 135 + scrollTo });
       } else {
         setPosition({ x: e.clientX - 140 + scroll, y: e.clientY - 135 });
       }
@@ -62,20 +77,37 @@ function Board() {
     setPosition((pos) => pos);
   }, [BoardElement?.current?.scrollLeft]);
 
+  const updateTask = async (column, task) => {
+    const response = await dispatch(updateTaskForColumn({
+      taskId: task.id,
+      body: {
+        columnId: column.id,
+      },
+    }));
+    useResponse({
+      status: response.meta.requestStatus,
+      type: 'task',
+      result: 'updated',
+    });
+  };
+
   const adjustTaskInColumn = () => {
     const x = sidebar ? position.x + 300 : position.x;
     const columns = columnsElement.current.filter((col) => col);
+    console.log(columns);
     const columnsPosition = columns.map((column) => {
       const { right } = column.getBoundingClientRect();
       return { x: right + window.scrollX };
     });
-    const taskCurrent = allTasks.find(({ id }) => id === dropTask);
-    console.log(`${x}: Posição da Task`);
-    console.log(`${columnsPosition[1].x}: Posição da Coluna 2`);
+    let taskCurrent = allTasks.find(({ id }) => id === dropTask);
+    if (taskCurrent) getAllTasksOfBoard();
+    taskCurrent = allTasks.find(({ id }) => id === dropTask);
+
+    console.log(columnsPosition);
 
     for (let i = 0; i < columnsPosition.length; i++) {
       if ((x + 0) < columnsPosition[i].x) {
-        columns[i].appendChild(taskCurrent);
+        updateTask(columns[i], taskCurrent);
         break;
       }
     }
@@ -96,26 +128,13 @@ function Board() {
     if (false /* wasMoved */) {
       setWasMoved(false);
     } else {
-      // setModalViewTask(taskId);
+      setModalViewTask(taskId);
     }
   };
 
-  const getAllTasksOfBoard = () => {
-    try {
-      const tasks = columnsElement.current.reduce((accum, column) => {
-        const onlyTask = [...column.children].filter(({ id }) => id);
-        return [...accum, ...onlyTask];
-      }, []);
-      setAllTasks(tasks);
-    } catch (error) {
-      console.log(error);
-    }
+  const openEditBoard = () => {
+    showModalEditBoard(true);
   };
-
-  useEffect(() => {
-    // const task = taskElement?.current?.getBoundingClientRect();
-    // console.log(task);
-  });
 
   useEffect(() => {
     const columns = columnsElement?.current;
@@ -126,57 +145,71 @@ function Board() {
   }, [sidebar, board?.columns]);
 
   return (
-    <Container sidebar={sidebar} mobile={mobile} ref={BoardElement}>
-      {board?.columns.map(({ name, id: columnId, tasks }, index) => (
-        <Column
-          key={columnId}
-          ref={(element) => {
-            columnsElement.current[index] = element;
-          }}
-        >
-          <ColumnTitle>
-            {name}
-            {`(${tasks.length})`}
-          </ColumnTitle>
-          {tasks.map(({ title, id: taskId, subtasks }, i) => (
-            <Task
+    <div>
+      {board?.columns.length ? (
+        <Container sidebar={sidebar} mobile={mobile} ref={BoardElement}>
+          {board?.columns.map(({ name, id: columnId, tasks }, index) => (
+            <Column
+              key={columnId}
               ref={(element) => {
-                taskElement.current[i] = element;
+                columnsElement.current[index] = element;
               }}
-              key={taskId}
-              onMouseDown={handleMouseDown}
-              onMouseMove={
-                isDragging ? (e) => handleMouseMove(e, taskId) : undefined
-              }
-              onMouseUp={handleMouseUp}
-              onTouchStart={handleMouseDown}
-              onTouchMove={
-                isDragging ? (e) => handleMouseMove(e, taskId) : undefined
-              }
-              onTouchEnd={handleMouseUp}
-              onClick={() => handleViewTaskModal(taskId)}
-              position={position}
-              drop={dropTask}
-              id={taskId}
+              id={columnId}
             >
-              {title}
-              <Subtask>
-                {subtasks.filter(({ completed }) => completed).length}
-                {' '}
-                of
-                {' '}
-                {subtasks.length}
-                {' '}
-                subtasks
-              </Subtask>
-            </Task>
+              <ColumnTitle>
+                {name}
+                {`(${tasks.length})`}
+              </ColumnTitle>
+              {tasks.map(({ title, id: taskId, subtasks }, i) => (
+                <Task
+                  ref={(element) => {
+                    taskElement.current[i] = element;
+                  }}
+                  key={taskId}
+                  onMouseDown={handleMouseDown}
+                  onMouseMove={
+                  isDragging ? (e) => handleMouseMove(e, taskId) : undefined
+                }
+                  onMouseUp={handleMouseUp}
+                  onTouchStart={handleMouseDown}
+                  onTouchMove={
+                  isDragging ? (e) => handleMouseMove(e, taskId) : undefined
+                }
+                  onTouchEnd={handleMouseUp}
+                  onClick={() => handleViewTaskModal(taskId)}
+                  position={position}
+                  drop={dropTask}
+                  id={taskId}
+                >
+                  {title}
+                  <Subtask>
+                    {subtasks.filter(({ completed }) => completed).length}
+                    {' '}
+                    of
+                    {' '}
+                    {subtasks.length}
+                    {' '}
+                    subtasks
+                  </Subtask>
+                </Task>
+              ))}
+            </Column>
           ))}
-        </Column>
-      ))}
-      {modalViewTask && (
-        <ViewTask taskId={modalViewTask} closeModal={setModalViewTask} />
+          <NewColumn onClick={openEditBoard}>
+            <p>+ New Column</p>
+          </NewColumn>
+          {modalViewTask && (
+          <ViewTask taskId={modalViewTask} closeModal={setModalViewTask} />
+          )}
+        </Container>
+      ) : (
+        <BoardEmpty sidebar={sidebar} mobile={mobile}>
+          <p>This board is empty. Create a new column to get started.</p>
+          <Button fnClick={openEditBoard}>+ Add New Column</Button>
+        </BoardEmpty>
       )}
-    </Container>
+      {tasks.loading && <Loading />}
+    </div>
   );
 }
 
@@ -252,4 +285,46 @@ const Subtask = styled.p`
   color: ${({ theme }) => theme.textSecundary};
   margin-top: 8px;
   font-size: 13px;
+`;
+
+const NewColumn = styled.div`
+  width: 280px;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: 0.9s ease-in-out;
+  color: ${({ theme }) => theme.textSecundary};
+  background: ${({ theme }) => theme.bgTertiary};
+  p {
+    font-size: 20px;
+    font-weight: 600;
+    margin-top: 200px;
+  }
+  &:hover {
+    background: ${({ theme }) => theme.bgTertiaryHover};
+    transition: 0.9s ease-in-out;
+  }
+`;
+
+const BoardEmpty = styled.div`
+  width: 100vw;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 32px;
+  font-size: 18px;
+  font-weight: 600;
+  transition: 0.5s;
+  text-align: center;
+  color: ${({ theme }) => theme.textSecundary};
+  padding: 16px;
+  padding-left: ${({ sidebar, mobile }) => (sidebar && !mobile ? '300px' : '0px')};
+
+  button {
+    max-width: 220px;
+  }
 `;

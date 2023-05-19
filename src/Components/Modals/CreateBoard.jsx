@@ -46,7 +46,7 @@ function CreateBoard({ boardId, closeModal }) {
       columns,
     };
     const response = await dispatch(
-      createBoard({ userId: localStorage.getItem('userId'), body })
+      createBoard({ userId: localStorage.getItem('userId'), body }),
     );
     useResponse({
       status: response.meta.requestStatus,
@@ -76,7 +76,7 @@ function CreateBoard({ boardId, closeModal }) {
       <CreateBoardContent
         onSubmit={!boardId ? handleCreateBoard : handleUpdateBoard}
       >
-        <h2>Add New Board</h2>
+        <h2>{!boardId ? 'Add New Board' : 'Edit Board'}</h2>
         <Input
           label="Name"
           id="name"

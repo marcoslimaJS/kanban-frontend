@@ -1,7 +1,7 @@
 /* eslint-disable no-unused-expressions */
 /* eslint-disable no-param-reassign */
 import { createSlice } from '@reduxjs/toolkit';
-import { createTask, deleteTask, updateTask } from './tasksActions';
+import { createTask, deleteTask, updateTask, updateTaskForColumn } from './tasksActions';
 
 const taskSlice = createSlice({
   name: 'task',
@@ -47,6 +47,19 @@ const taskSlice = createSlice({
         state.refresh += 1;
       })
       .addCase(updateTask.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.error?.message;
+      })
+
+      .addCase(updateTaskForColumn.pending, (state) => {
+        state.loading = true;
+        console.log(state);
+      })
+      .addCase(updateTaskForColumn.fulfilled, (state) => {
+        state.loading = false;
+        state.refresh += 1;
+      })
+      .addCase(updateTaskForColumn.rejected, (state, action) => {
         state.loading = false;
         state.error = action.error?.message;
       });
