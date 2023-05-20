@@ -9,9 +9,9 @@ import { updateTaskForColumn } from '../store/board/tasksActions';
 import useResponse from '../Hooks/useResponse';
 import Loading from './Interactive/Loading';
 
-function Board({ showModalEditBoard, loadingTask, setLoadingTask }) {
+function Board({ showModalEditBoard }) {
   const { board } = useSelector((state) => state.boards);
-  const { sidebar } = useSelector((state) => state);
+  const { boards, sidebar, tasks } = useSelector((state) => state);
   const mobile = useMedia('(max-width: 640px)');
   const BoardElement = useRef(null);
   const columnsElement = useRef([]);
@@ -84,7 +84,6 @@ function Board({ showModalEditBoard, loadingTask, setLoadingTask }) {
   }, [BoardElement?.current?.scrollLeft]);
 
   const updateTask = async (column, task) => {
-    setLoadingTask(true);
     const response = await dispatch(updateTaskForColumn({
       taskId: task.id,
       body: {
@@ -96,9 +95,6 @@ function Board({ showModalEditBoard, loadingTask, setLoadingTask }) {
       type: 'task',
       result: 'updated',
     });
-    if (response.meta.requestStatus === 'rejected') {
-      setLoadingTask(false);
-    }
   };
 
   const adjustTaskInColumn = () => {
@@ -160,7 +156,7 @@ function Board({ showModalEditBoard, loadingTask, setLoadingTask }) {
     <div>
       {board?.columns.length ? (
         <Container sidebar={sidebar} mobile={mobile} ref={BoardElement}>
-          {board?.columns.map(({ name, id: columnId, tasks }, index) => (
+          {board?.columns.map(({ name, id: columnId, tasks: tasksColumn }, index) => (
             <Column
               key={columnId}
               ref={(element) => {
@@ -170,9 +166,9 @@ function Board({ showModalEditBoard, loadingTask, setLoadingTask }) {
             >
               <ColumnTitle>
                 {name}
-                {`(${tasks.length})`}
+                {`(${tasksColumn.length})`}
               </ColumnTitle>
-              {tasks.map(({ title, id: taskId, subtasks }, i) => (
+              {tasksColumn.map(({ title, id: taskId, subtasks }, i) => (
                 <Task
                   ref={(element) => {
                     taskElement.current[i] = element;
@@ -220,21 +216,17 @@ function Board({ showModalEditBoard, loadingTask, setLoadingTask }) {
           <Button fnClick={openEditBoard}>+ Add New Column</Button>
         </BoardEmpty>
       )}
-      {loadingTask && <Loading />}
+      {(tasks.loading || boards.loading) && <Loading />}
     </div>
   );
 }
 
 Board.propTypes = {
   showModalEditBoard: PropTypes.func,
-  setLoadingTask: PropTypes.func,
-  loadingTask: PropTypes.bool,
 };
 
 Board.defaultProps = {
   showModalEditBoard: () => {},
-  setLoadingTask: () => {},
-  loadingTask: false,
 };
 
 export default Board;
