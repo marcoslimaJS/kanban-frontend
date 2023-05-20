@@ -29,11 +29,16 @@ function Board({ showModalEditBoard }) {
 
   const getAllTasksOfBoard = () => {
     const columns = columnsElement.current.filter((col) => col);
-    const tasks = columns.reduce((accum, column) => {
+    const tasksAll = columns.reduce((accum, column) => {
       const onlyTask = [...column.children].filter(({ id }) => id);
       return [...accum, ...onlyTask];
     }, []);
-    setAllTasks(tasks);
+    setAllTasks(tasksAll);
+  };
+
+  const taskIsAlreadyInTheColumn = (column, task) => {
+    const currentColumn = board.columns.find(({ id }) => id === column.id);
+    return currentColumn.tasks.some(({ id }) => id === task.id);
   };
 
   const handleMouseMove = (event, taskId) => {
@@ -107,7 +112,8 @@ function Board({ showModalEditBoard }) {
 
     for (let i = 0; i < columnsPosition.length; i++) {
       if ((x + 0) < columnsPosition[i].x) {
-        updateTask(columns[i], taskCurrent);
+        const sameColumn = taskIsAlreadyInTheColumn(columns[i], taskCurrent);
+        if (!sameColumn) updateTask(columns[i], taskCurrent);
         break;
       }
     }
@@ -128,7 +134,7 @@ function Board({ showModalEditBoard }) {
     if (false /* wasMoved */) {
       setWasMoved(false);
     } else {
-      setModalViewTask(taskId);
+      // setModalViewTask(taskId);
     }
   };
 

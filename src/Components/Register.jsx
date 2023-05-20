@@ -2,6 +2,7 @@ import React, { useEffect } from 'react';
 import styled from 'styled-components';
 import { useDispatch, useSelector } from 'react-redux';
 // import { Navigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { ReactComponent as Logo } from '../assets/logo-dark.svg';
 import { ReactComponent as ImgSVG } from '../assets/scrum-board.svg';
 import Button from './Interactive/Button';
@@ -14,6 +15,7 @@ function Register() {
   const { user, error, loading } = useSelector((state) => state.auth);
 
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const username = useForm();
   const password = useForm();
 
@@ -35,6 +37,10 @@ function Register() {
       }
       console.log(response);
     }
+  };
+
+  const backToLogin = () => {
+    navigate('/login');
   };
 
   useEffect(() => {
@@ -74,6 +80,10 @@ function Register() {
             </Button>
             {error && <Error>{error}</Error>}
           </FormLogin>
+          <Login onClick={backToLogin}>
+            <span />
+            Go to login
+          </Login>
         </Content>
       </Main>
     </Container>
@@ -120,8 +130,8 @@ const ColumnImg = styled.div`
   @media (max-width: 675px) {
     max-width: 300px;
     svg {
-    width: 100%;
-    max-height: 200px;
+      width: 100%;
+      max-height: 200px;
     }
   }
 `;
@@ -182,6 +192,32 @@ const Error = styled.p`
   text-align: center;
   padding: 10px 0px;
   border-radius: 5px;
-  box-shadow: rgba(50, 50, 93, 0.25) 0px 6px 12px -2px, rgba(0, 0, 0, 0.3) 0px 3px 7px -3px;
+  box-shadow: rgba(50, 50, 93, 0.25) 0px 6px 12px -2px,
+    rgba(0, 0, 0, 0.3) 0px 3px 7px -3px;
   font-size: 16px;
+`;
+
+const Login = styled.div`
+  color: #fff;
+  font-size: 18px;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: 0.5s;
+  span {
+    width: 0px;
+    border-top: 8px solid transparent;
+    border-bottom: 8px solid transparent;
+    border-right: 8px solid #fff;
+    transition: 0.5s;
+  }
+
+  &:hover {
+    color: #000;
+    span {
+      border-right: 8px solid #000;
+    }
+  }
 `;

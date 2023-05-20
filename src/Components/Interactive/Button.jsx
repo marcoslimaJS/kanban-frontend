@@ -21,7 +21,7 @@ function Button({
       onClick={fnClick}
       type={type}
       disabled={loading}
-      loading={loading}
+      load={loading}
     >
       {!mobile ? children : <AddIcon />}
       {loading && <Loading />}
@@ -53,7 +53,7 @@ Button.defaultProps = {
 export default Button;
 
 const ButtonStyled = styled.button`
-  background: ${({ theme, bg, loading, hover }) => (!loading ? theme[bg] : theme[hover])};
+  background: ${({ theme, bg, load, hover }) => (!load ? theme[bg] : theme[hover])};
   color: ${({ theme, color }) => theme[color]};
   padding: 14px 22px;
   border-radius: 24px;

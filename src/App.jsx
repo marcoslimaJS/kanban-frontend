@@ -9,11 +9,13 @@ import ProtectedRoute from './Components/helper/ProtectedRoute';
 import Home from './Components/Home';
 import { getAllBoards } from './store/board/boardsActions';
 import Register from './Components/Register';
+import Loading from './Components/Interactive/Loading';
 
 function App() {
   const [theme, setTheme] = useState(light);
   const { listBoards } = useSelector((state) => state.boards);
   const { refresh } = useSelector((state) => state.boards);
+  const [loadingAutoLogin, setLoadingAutoLogin] = useState(false);
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -22,8 +24,13 @@ function App() {
 
   // AutoLogin baseado nos boards do usuario
   useEffect(() => {
+    const autoLogin = async () => {
+      setLoadingAutoLogin(true);
+      await dispatch(getAllBoards(userId));
+      setLoadingAutoLogin(false);
+    };
     if (token && userId) {
-      dispatch(getAllBoards(userId));
+      autoLogin();
     }
   }, [refresh]);
 
@@ -49,6 +56,7 @@ function App() {
               )}
           />
         </Routes>
+        {loadingAutoLogin && <Loading />}
       </Container>
     </ThemeProvider>
   );

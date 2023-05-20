@@ -3,10 +3,12 @@ import styled from 'styled-components';
 // import { ReactComponent as LogoLight } from '../../assets/logo-light.svg';
 import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 import { ReactComponent as LogoDark } from '../../assets/logo-dark.svg';
 import { ReactComponent as LogoMobile } from '../../assets/logo-mobile.svg';
 import { ReactComponent as ConfigSVG } from '../../assets/icon-vertical-ellipsis.svg';
 import { ReactComponent as ArrowIcon } from '../../assets/icon-chevron-down.svg';
+import { ReactComponent as LogoutIcon } from '../../assets/logout.svg';
 import Button from '../Interactive/Button';
 import useMedia from '../../Hooks/useMedia';
 import { showSidebar } from '../../store/sidebar';
@@ -20,6 +22,7 @@ function Header({ openBoardEdit, openBoardDelete, openCreateTask }) {
   const configRef = useRef(null);
   const mobile = useMedia('(max-width: 640px)');
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const openModalCreateTask = () => {
     openCreateTask(true);
@@ -39,6 +42,12 @@ function Header({ openBoardEdit, openBoardDelete, openCreateTask }) {
 
   const handleSidebar = () => {
     dispatch(showSidebar());
+  };
+
+  const logout = () => {
+    localStorage.removeItem('userId');
+    localStorage.removeItem('token');
+    navigate('/login');
   };
 
   useEffect(() => {
@@ -79,6 +88,10 @@ function Header({ openBoardEdit, openBoardDelete, openCreateTask }) {
                 <DeleteButton onClick={openModalDeleteBoard}>
                   Delete Board
                 </DeleteButton>
+                <Logout onClick={logout}>
+                  Logout
+                  <LogoutIcon />
+                </Logout>
               </ConfigModal>
             )}
           </ConfigContainer>
@@ -191,10 +204,33 @@ const EditButton = styled.button`
   color: ${({ theme }) => theme.textSecundary};
   text-align: start;
   cursor: pointer;
+  font-size: 16px;
 `;
 
 const DeleteButton = styled.button`
   color: ${({ theme }) => theme.delete};
   text-align: start;
   cursor: pointer;
+  font-size: 16px;
+`;
+
+const Logout = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  font-size: 16px;
+  font-weight: 600;
+  background: ${({ theme }) => theme.colorPrimary};
+  padding: 5px 32px;
+  border-radius: 6px;
+  cursor: pointer;
+  color: #fff;
+  svg {
+    width: 20px;
+    height: 20px;
+    position: relative;
+  }
+  svg path {
+    fill: #fff;
+  }
 `;
