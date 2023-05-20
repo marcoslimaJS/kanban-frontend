@@ -15,7 +15,7 @@ import CreateBoard from '../Modals/CreateBoard';
 import useMedia from '../../Hooks/useMedia';
 import { AnimeDownBig } from '../../styles/animations';
 
-function AsideDesktop({ setTheme }) {
+function AsideDesktop({ setTheme, setLoadingTask }) {
   const dispatch = useDispatch();
   const { sidebar, boards, tasks } = useSelector((state) => state);
   const [showModalCreateBoard, setShowModalCreateBoard] = useState(false);
@@ -49,7 +49,11 @@ function AsideDesktop({ setTheme }) {
       isFirstRender.current = false;
       return;
     }
-    dispatch(boardData(currentBoardId));
+    const refreshBoard = async () => {
+      const response = await dispatch(boardData(currentBoardId));
+      setLoadingTask(false);
+    };
+    refreshBoard();
   }, [tasks.refresh, boards.refresh]);
 
   return (
@@ -96,12 +100,12 @@ function AsideDesktop({ setTheme }) {
 
 AsideDesktop.propTypes = {
   setTheme: PropTypes.func,
-  sidebarModal: PropTypes.bool,
+  setLoadingTask: PropTypes.func,
 };
 
 AsideDesktop.defaultProps = {
   setTheme: () => {},
-  sidebarModal: false,
+  setLoadingTask: () => {},
 };
 
 export default AsideDesktop;

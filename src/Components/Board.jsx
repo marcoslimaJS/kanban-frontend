@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import ViewTask from './Modals/ViewTask';
 import useMedia from '../Hooks/useMedia';
@@ -8,16 +9,16 @@ import { updateTaskForColumn } from '../store/board/tasksActions';
 import useResponse from '../Hooks/useResponse';
 import Loading from './Interactive/Loading';
 
-function Board({ showModalEditBoard }) {
+function Board({ showModalEditBoard, loadingTask, setLoadingTask }) {
   const { board } = useSelector((state) => state.boards);
-  const { sidebar, tasks } = useSelector((state) => state);
+  const { sidebar } = useSelector((state) => state);
   const mobile = useMedia('(max-width: 640px)');
   const BoardElement = useRef(null);
   const columnsElement = useRef([]);
   const taskElement = useRef([]);
   const [allTasks, setAllTasks] = useState([]);
   const [isDragging, setIsDragging] = useState(false);
-  const [wasMoved, setWasMoved] = useState(false);
+  // const [wasMoved, setWasMoved] = useState(false);
   const [position, setPosition] = useState(null);
   const [modalViewTask, setModalViewTask] = useState(null);
   const [dropTask, setDropTask] = useState('');
@@ -42,7 +43,7 @@ function Board({ showModalEditBoard }) {
   };
 
   const handleMouseMove = (event, taskId) => {
-    setWasMoved(true);
+    // setWasMoved(true);
     const e = event.type === 'touchmove' ? event.touches[0] : event;
     if (isDragging) {
       setDropTask(taskId);
@@ -83,6 +84,7 @@ function Board({ showModalEditBoard }) {
   }, [BoardElement?.current?.scrollLeft]);
 
   const updateTask = async (column, task) => {
+    setLoadingTask(true);
     const response = await dispatch(updateTaskForColumn({
       taskId: task.id,
       body: {
@@ -94,6 +96,9 @@ function Board({ showModalEditBoard }) {
       type: 'task',
       result: 'updated',
     });
+    if (response.meta.requestStatus === 'rejected') {
+      setLoadingTask(false);
+    }
   };
 
   const adjustTaskInColumn = () => {
@@ -131,8 +136,9 @@ function Board({ showModalEditBoard }) {
 
   const handleViewTaskModal = (taskId) => {
     console.log('CLIQUEEEEEEEEEEEEEEEE');
+    console.log(taskId);
     if (false /* wasMoved */) {
-      setWasMoved(false);
+      // setWasMoved(false);
     } else {
       // setModalViewTask(taskId);
     }
@@ -214,10 +220,22 @@ function Board({ showModalEditBoard }) {
           <Button fnClick={openEditBoard}>+ Add New Column</Button>
         </BoardEmpty>
       )}
-      {tasks.loading && <Loading />}
+      {loadingTask && <Loading />}
     </div>
   );
 }
+
+Board.propTypes = {
+  showModalEditBoard: PropTypes.func,
+  setLoadingTask: PropTypes.func,
+  loadingTask: PropTypes.bool,
+};
+
+Board.defaultProps = {
+  showModalEditBoard: () => {},
+  setLoadingTask: () => {},
+  loadingTask: false,
+};
 
 export default Board;
 

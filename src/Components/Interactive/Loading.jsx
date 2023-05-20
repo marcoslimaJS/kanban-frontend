@@ -21,7 +21,7 @@ const Container = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  z-index: 99999999999999999999999;
+  z-index: 9999;
   overflow-y: auto;
   padding: 48px 16px;
 `;

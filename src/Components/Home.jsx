@@ -23,6 +23,7 @@ function Home({ setTheme }) {
   const [showModalEditBoard, setShowModalEditBoard] = useState(false);
   const [showModalDeleteBoard, setShowModalDeleteBoard] = useState(false);
   const [showModalCreateTask, setShowModalCreateTask] = useState(false);
+  const [loadingTask, setLoadingTask] = useState(false);
   const dataBoard = {
     name: board?.name,
     userId: localStorage.getItem('userId'),
@@ -50,7 +51,7 @@ function Home({ setTheme }) {
       <Content>
         {!mobile && (
           <>
-            <AsideDesktop setTheme={setTheme} />
+            <AsideDesktop setTheme={setTheme} setLoadingTask={setLoadingTask} />
             {!sidebar && (
               <ShowSidebar onClick={handleSidebar}>
                 <ShowSVG />
@@ -58,7 +59,11 @@ function Home({ setTheme }) {
             )}
           </>
         )}
-        <Board showModalEditBoard={setShowModalEditBoard} />
+        <Board
+          showModalEditBoard={setShowModalEditBoard}
+          loadingTask={loadingTask}
+          setLoadingTask={setLoadingTask}
+        />
         {sidebar && mobile && (
           <SidebarMobile onClick={hiddenSidebar}>
             <AsideDesktop setTheme={setTheme} />
@@ -74,7 +79,9 @@ function Home({ setTheme }) {
             data={dataBoard}
           />
         )}
-        {showModalCreateTask && <CreateTask closeModal={setShowModalCreateTask} />}
+        {showModalCreateTask && (
+          <CreateTask closeModal={setShowModalCreateTask} />
+        )}
       </Content>
     </Container>
   );
