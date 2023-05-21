@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
@@ -7,11 +7,12 @@ import Board from './Board';
 import Header from './Header/Header';
 import { ReactComponent as ShowSVG } from '../assets/icon-show-sidebar.svg';
 import { hideSidebar, showSidebar } from '../store/sidebar';
-import { AnimeDown, AnimeLeft } from '../styles/animations';
+import { AnimeLeft } from '../styles/animations';
 import useMedia from '../Hooks/useMedia';
 import CreateBoard from './Modals/CreateBoard';
 import DeleteModal from './Modals/DeleteModal';
 import CreateTask from './Modals/CreateTask';
+import BoardLayoutMobile from './BoardLayoutMobile';
 
 function Home({ setTheme }) {
   const dispatch = useDispatch();
@@ -37,9 +38,6 @@ function Home({ setTheme }) {
     dispatch(hideSidebar());
   };
 
-  const token = localStorage.getItem('token');
-  const userId = localStorage.getItem('userId');
-
   return (
     <Container>
       <Header
@@ -58,9 +56,14 @@ function Home({ setTheme }) {
             )}
           </>
         )}
-        <Board
-          showModalEditBoard={setShowModalEditBoard}
-        />
+        {false ? (
+          <Board showModalEditBoard={setShowModalEditBoard} />
+        ) : (
+          <BoardLayoutMobile
+            showModalEditBoard={setShowModalEditBoard}
+            setShowModalCreateTask={setShowModalCreateTask}
+          />
+        )}
         {sidebar && mobile && (
           <SidebarMobile onClick={hiddenSidebar}>
             <AsideDesktop setTheme={setTheme} />
@@ -107,6 +110,9 @@ const Content = styled.div`
   grid-template-columns: auto 1fr;
   height: 100%;
   position: relative;
+  @media (max-width: 640px) {
+    display: block;
+  }
 `;
 
 const ShowSidebar = styled.div`

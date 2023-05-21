@@ -36,7 +36,7 @@ const ModalOverlay = styled.div`
   align-items: center;
   z-index: 9000;
   overflow-y: auto;
-  padding: 48px 16px;
+  padding: 48px 24px;
 `;
 
 const ModalWrapper = styled.div`

@@ -11,6 +11,7 @@ const boardSlice = createSlice({
     refresh: 0,
     loading: false,
     error: null,
+    deleted: 0,
   },
   reducers: {},
   extraReducers: (builder) => {
@@ -66,9 +67,12 @@ const boardSlice = createSlice({
       .addCase(deleteBoard.pending, (state) => {
         state.loading = true;
       })
-      .addCase(deleteBoard.fulfilled, (state) => {
+      .addCase(deleteBoard.fulfilled, (state, action) => {
         state.loading = false;
         state.refresh += 1;
+        state.board = null;
+        state.deleted += 1;
+        state.listBoards = state.listBoards.filter(({ id }) => id !== action.payload);
       })
       .addCase(deleteBoard.rejected, (state, action) => {
         state.loading = false;

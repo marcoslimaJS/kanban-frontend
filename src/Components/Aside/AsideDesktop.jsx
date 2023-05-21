@@ -1,5 +1,5 @@
 /* eslint-disable react/jsx-one-expression-per-line */
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
@@ -17,10 +17,8 @@ import { AnimeDownBig } from '../../styles/animations';
 
 function AsideDesktop({ setTheme }) {
   const dispatch = useDispatch();
-  const { sidebar, boards, tasks } = useSelector((state) => state);
+  const { sidebar, boards } = useSelector((state) => state);
   const [showModalCreateBoard, setShowModalCreateBoard] = useState(false);
-  const [currentBoardId, setCurrentBoardId] = useState(boards.listBoards[0]?.id);
-  const isFirstRender = useRef(true);
   const mobile = useMedia('(max-width: 640px)');
 
   const handleSidebar = () => {
@@ -28,32 +26,12 @@ function AsideDesktop({ setTheme }) {
   };
 
   const handleBoardData = (id) => {
-    setCurrentBoardId(id);
     dispatch(boardData(id));
   };
 
   const createBoard = () => {
     setShowModalCreateBoard(true);
   };
-
-  useEffect(() => {
-    const firstId = boards.listBoards[0]?.id;
-    if (firstId) {
-      dispatch(boardData(firstId));
-    }
-  }, []);
-
-  // Refresh no Board caso altere as tasks
-  useEffect(() => {
-    if (isFirstRender.current) {
-      isFirstRender.current = false;
-      return;
-    }
-    const refreshBoard = async () => {
-      dispatch(boardData(currentBoardId));
-    };
-    refreshBoard();
-  }, [tasks.refresh, boards.refresh]);
 
   return (
     <Container

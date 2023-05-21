@@ -41,8 +41,8 @@ export const deleteBoard = createAsyncThunk(
   'board/deleteBoard',
   async ({ boardId, body }, { rejectWithValue }) => {
     try {
-      const response = await api.delete(`/board/${boardId}`, { data: body });
-      return response.data;
+      await api.delete(`/board/${boardId}`, { data: body });
+      return boardId;
     } catch (error) {
       return rejectWithValue(error.response.data);
     }

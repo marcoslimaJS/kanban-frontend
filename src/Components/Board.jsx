@@ -8,6 +8,7 @@ import Button from './Interactive/Button';
 import { updateTaskForColumn } from '../store/board/tasksActions';
 import useResponse from '../Hooks/useResponse';
 import Loading from './Interactive/Loading';
+import { boardData } from '../store/board/boardsActions';
 
 function Board({ showModalEditBoard }) {
   const { board } = useSelector((state) => state.boards);
@@ -22,6 +23,7 @@ function Board({ showModalEditBoard }) {
   const [position, setPosition] = useState(null);
   const [modalViewTask, setModalViewTask] = useState(null);
   const [dropTask, setDropTask] = useState('');
+  const isFirstRender = useRef(true);
   const dispatch = useDispatch();
 
   const handleMouseDown = () => {
@@ -151,6 +153,27 @@ function Board({ showModalEditBoard }) {
       getAllTasksOfBoard();
     }
   }, [sidebar, board?.columns]);
+
+  useEffect(() => {
+    const firstId = boards.listBoards[0]?.id;
+    if (firstId) {
+      dispatch(boardData(firstId));
+    }
+  }, [boards.deleted]);
+
+  // Refresh no Board caso altere as tasks
+  useEffect(() => {
+    if (isFirstRender.current) {
+      isFirstRender.current = false;
+      return;
+    }
+    const refreshBoard = async () => {
+      dispatch(boardData(board?.id));
+    };
+    refreshBoard();
+  }, [tasks.refresh, boards.refresh]);
+
+  console.log(boards?.listBoards);
 
   return (
     <div>

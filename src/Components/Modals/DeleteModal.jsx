@@ -1,9 +1,10 @@
 import React from 'react';
 import styled from 'styled-components';
+import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
 import Modal from './Modal';
 import Button from '../Interactive/Button';
-import { deleteBoard } from '../../store/board/boardsActions';
+import { boardData, deleteBoard } from '../../store/board/boardsActions';
 import { deleteTask } from '../../store/board/tasksActions';
 import useResponse from '../../Hooks/useResponse';
 
@@ -17,7 +18,7 @@ const getDescriptions = (type, name) => {
 
 function DeleteModal({ id, closeModal, data }) {
   const dispatch = useDispatch();
-  const { boards, tasks} = useSelector((state) => state);
+  const { boards, tasks } = useSelector((state) => state);
   const closeDeleteModal = () => {
     closeModal(false);
   };
@@ -28,11 +29,25 @@ function DeleteModal({ id, closeModal, data }) {
     };
     if (data.type === 'board') {
       const response = await dispatch(deleteBoard({ boardId: id, body }));
-      useResponse({ status: response.meta.requestStatus, type: 'board', result: 'deleted' });
+      useResponse({
+        status: response.meta.requestStatus,
+        type: 'board',
+        result: 'deleted',
+      });
+      if (response.meta.requestStatus === 'fulfilled') {
+        const firstId = boards.listBoards[0]?.id;
+        console.log(firstId);
+        console.log(boards.listBoards);
+        dispatch(boardData(firstId));
+      }
     }
     if (data.type === 'task') {
       const response = await dispatch(deleteTask({ taskId: id, body }));
-      useResponse({ status: response.meta.requestStatus, type: 'task', result: 'deleted' });
+      useResponse({
+        status: response.meta.requestStatus,
+        type: 'task',
+        result: 'deleted',
+      });
     }
     closeDeleteModal();
   };
@@ -42,7 +57,7 @@ function DeleteModal({ id, closeModal, data }) {
       <DeleteModalContent>
         <Title>
           Delete this
-          <span> {data.type}</span>
+          <span>{data.type}</span>
         </Title>
         <Description>{getDescriptions(data.type, data.name)}</Description>
         <ButtonsContainer>
@@ -67,6 +82,22 @@ function DeleteModal({ id, closeModal, data }) {
     </Modal>
   );
 }
+
+DeleteModal.propTypes = {
+  id: PropTypes.string,
+  closeModal: PropTypes.func,
+  data: PropTypes.shape({
+    name: PropTypes.string,
+    userId: PropTypes.string,
+    type: PropTypes.string,
+  }),
+};
+
+DeleteModal.defaultProps = {
+  id: '',
+  closeModal: () => {},
+  data: {},
+};
 
 export default DeleteModal;
 
