@@ -12,6 +12,7 @@ function Button({
   type,
   mobile,
   loading,
+  close,
 }) {
   return (
     <ButtonStyled
@@ -20,7 +21,8 @@ function Button({
       color={color}
       onClick={fnClick}
       type={type}
-      disabled={loading}
+      disabled={loading || close}
+      close={close}
       load={loading}
     >
       {!mobile ? children : <AddIcon />}
@@ -38,6 +40,7 @@ Button.propTypes = {
   type: PropTypes.string,
   mobile: PropTypes.bool,
   loading: PropTypes.bool,
+  close: PropTypes.bool,
 };
 
 Button.defaultProps = {
@@ -48,18 +51,27 @@ Button.defaultProps = {
   type: 'button',
   mobile: false,
   loading: false,
+  close: false,
 };
 
 export default Button;
 
 const ButtonStyled = styled.button`
-  background: ${({ theme, bg, load, hover }) => (!load ? theme[bg] : theme[hover])};
+  background: ${({ theme, bg, load, hover, close }) => (!load && !close ? theme[bg] : theme[hover])};
   color: ${({ theme, color }) => theme[color]};
   padding: 14px 22px;
   border-radius: 24px;
   font-size: 14px;
   width: 100%;
-  cursor: pointer;
+  cursor: ${({ load, close }) => {
+    if (load) {
+      return 'progress';
+    }
+    if (close) {
+      return 'not-allowed';
+    }
+    return 'pointer';
+  }};
   transition: 0.3s ease-in-out;
   display: flex;
   align-items: center;

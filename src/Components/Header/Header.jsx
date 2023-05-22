@@ -13,6 +13,7 @@ import Button from '../Interactive/Button';
 import useMedia from '../../Hooks/useMedia';
 import { showSidebar } from '../../store/sidebar';
 import { updateBoardLayout } from '../../store/auth/authActions';
+import { AnimeDown, AnimeLeft, AnimeScale } from '../../styles/animations';
 
 function Header({ openBoardEdit, openBoardDelete, openCreateTask }) {
   const {
@@ -87,7 +88,7 @@ function Header({ openBoardEdit, openBoardDelete, openCreateTask }) {
           {mobile && <ArrowIcon />}
         </TitleBoard>
         <ButtonsContainer>
-          <Button fnClick={openModalCreateTask} mobile={mobile}>
+          <Button fnClick={openModalCreateTask} mobile={mobile} close={!board?.columns.length}>
             + Add New Task
           </Button>
           <ConfigContainer ref={configRef}>
@@ -215,6 +216,7 @@ const ConfigModal = styled.div`
   box-shadow: 0px 10px 20px rgba(54, 78, 126, 0.25);
   background: ${({ theme }) => theme.bgPrimary};
   width: 192px;
+  animation: ${AnimeScale} 0.5s ease-in-out;
 `;
 
 const EditButton = styled.button`

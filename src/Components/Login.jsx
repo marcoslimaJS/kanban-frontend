@@ -10,7 +10,6 @@ import Input from './Interactive/Input';
 import useForm from '../Hooks/useForm';
 import { loginUser } from '../store/auth/authActions';
 import { getAllBoards } from '../store/board/boardsActions';
-import { hideSidebar } from '../store/sidebar';
 
 function Login() {
   const { user, error, loading } = useSelector((state) => state.auth);
@@ -34,10 +33,6 @@ function Login() {
   const goToRegister = () => {
     navigate('/register');
   };
-
-  useEffect(() => {
-    dispatch(hideSidebar());
-  }, []);
 
   useEffect(() => {
     if (user?.userId) {

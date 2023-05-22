@@ -3,11 +3,12 @@ import styled from 'styled-components';
 import PropTypes from 'prop-types';
 import { ReactComponent as ArrowDown } from '../../assets/icon-chevron-down.svg';
 
-function DropDown({ options, value, setValue, label }) {
+function DropDown({ options, value, setValue, label, updateTaskColumn }) {
   const [isOpen, setIsOpen] = useState(false);
 
   const handleOptionClick = (option) => {
     setValue(option);
+    updateTaskColumn(option.value);
     setIsOpen(false);
   };
 
@@ -42,6 +43,7 @@ DropDown.propTypes = {
     }),
   ),
   setValue: PropTypes.func,
+  updateTaskColumn: PropTypes.func,
   label: PropTypes.string,
   value: PropTypes.shape({
     value: PropTypes.string.isRequired,
@@ -52,6 +54,7 @@ DropDown.propTypes = {
 DropDown.defaultProps = {
   options: [],
   setValue: () => {},
+  updateTaskColumn: () => {},
   label: '',
   value: {},
 };

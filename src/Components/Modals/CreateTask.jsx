@@ -21,13 +21,12 @@ function CreateTask({ taskId, closeModal }) {
   const options = board.columns.map(({ name, id }) => ({
     label: name,
     value: id,
-  }));
+  })).reverse();
   const [status, setStatus] = useState(options[options.length - 1]);
   const title = useForm(task?.title);
   const description = useForm(task?.description);
   const [subtasks, setSubtasks] = useState(task?.subtasks || []);
-  console.log(task);
-  console.log(subtasks);
+
   const closeModalCreateTask = () => {
     closeModal(false);
   };
@@ -51,7 +50,6 @@ function CreateTask({ taskId, closeModal }) {
 
   const handleCreateTask = async (e) => {
     e.preventDefault();
-    console.log(title.value, description.value, subtasks);
     const body = {
       title: title.value,
       description: description.value,
@@ -84,8 +82,6 @@ function CreateTask({ taskId, closeModal }) {
     });
     closeModalCreateTask();
   };
-
-  console.log(title.value);
 
   return (
     <Modal onClose={closeModalCreateTask}>

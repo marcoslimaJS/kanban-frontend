@@ -1,12 +1,16 @@
 import React from 'react';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
+import { ReactComponent as CloseIcon } from '../../assets/close.svg';
 import { AnimeScale } from '../../styles/animations';
 
 function Modal({ onClose, children }) {
   return (
     <ModalOverlay onClick={onClose}>
       <ModalWrapper onClick={(e) => e.stopPropagation()}>
+        <CloseModalIcon>
+          <CloseIcon onClick={onClose} />
+        </CloseModalIcon>
         {children}
       </ModalWrapper>
     </ModalOverlay>
@@ -42,9 +46,28 @@ const ModalOverlay = styled.div`
 const ModalWrapper = styled.div`
   background-color: #fff;
   border-radius: 6px;
-  padding: 32px;
+  padding: 48px 32px 32px 32px;
   max-width: 480px;
   width: 100%;
   font-size: 13px;
   animation: ${AnimeScale} 0.5s ease-in-out;
+  position: relative;
+`;
+
+const CloseModalIcon = styled.span`
+  svg {
+    position: absolute;
+    right: 10px;
+    top: 10px;
+    cursor: pointer;
+    padding: 5px;
+  }
+
+  svg path {
+    fill: ${({ theme }) => theme.colorPrimary};
+    transition: 0.5s;
+  }
+  svg:hover path {
+    fill: ${({ theme }) => theme.colorSecundary};
+  }
 `;

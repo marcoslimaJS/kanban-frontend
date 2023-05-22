@@ -16,7 +16,7 @@ const getDescriptions = (type, name) => {
   return descriptions[type];
 };
 
-function DeleteModal({ id, closeModal, data }) {
+function DeleteModal({ id, closeModal, data, closeViewModal }) {
   const dispatch = useDispatch();
   const { boards, tasks } = useSelector((state) => state);
   const closeDeleteModal = () => {
@@ -50,6 +50,7 @@ function DeleteModal({ id, closeModal, data }) {
       });
     }
     closeDeleteModal();
+    closeViewModal(false);
   };
 
   return (
@@ -86,6 +87,7 @@ function DeleteModal({ id, closeModal, data }) {
 DeleteModal.propTypes = {
   id: PropTypes.string,
   closeModal: PropTypes.func,
+  closeViewModal: PropTypes.func,
   data: PropTypes.shape({
     name: PropTypes.string,
     userId: PropTypes.string,
@@ -96,6 +98,7 @@ DeleteModal.propTypes = {
 DeleteModal.defaultProps = {
   id: '',
   closeModal: () => {},
+  closeViewModal: () => {},
   data: {},
 };
 

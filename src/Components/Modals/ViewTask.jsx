@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import Modal from './Modal';
 import { getTaskById } from '../../store/board/tasks';
 import { ReactComponent as ConfigSVG } from '../../assets/icon-vertical-ellipsis.svg';
@@ -9,23 +9,23 @@ import { ReactComponent as CheckIcon } from '../../assets/icon-check.svg';
 import DropDown from '../Interactive/DropDown';
 import DeleteModal from './DeleteModal';
 import CreateTask from './CreateTask';
+import { updateTask } from '../../store/board/tasksActions';
 
 function ViewTask({ taskId, closeModal }) {
   const task = useSelector(({ boards }) => getTaskById(boards.board, taskId));
-  const { refresh } = useSelector((state) => state.tasks);
   const { columns } = useSelector(({ boards }) => boards.board);
   const [showConfigModal, setShowConfigModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
-  const isFirstRender = useRef(true);
   const dataTask = {
     name: task.title,
     userId: localStorage.getItem('userId'),
     type: 'task',
   };
+  const dispatch = useDispatch();
 
   const options = columns.map(({ id, name }) => ({ label: name, value: id }));
-  const [status, setStatus] = useState(options[options.length - 1]);
+  const [status, setStatus] = useState(options.find(({ value }) => value === task.columnId));
 
   if (!taskId) return null;
 
@@ -45,13 +45,20 @@ function ViewTask({ taskId, closeModal }) {
     setShowEditModal(true);
   };
 
-  useEffect(() => {
-    if (isFirstRender.current) {
-      isFirstRender.current = false;
-      return;
+  const updateSubtask = (subtaskId) => {
+    const newTask = JSON.parse(JSON.stringify(task));
+    const currentSubtask = newTask?.subtasks.find(({ id }) => id === subtaskId);
+    currentSubtask.completed = !currentSubtask.completed;
+    dispatch(updateTask({ taskId: task.id, body: newTask }));
+  };
+
+  const updateTaskColumn = (columnId) => {
+    const newTask = JSON.parse(JSON.stringify(task));
+    newTask.columnId = columnId;
+    if (task.columnId !== columnId) {
+      dispatch(updateTask({ taskId: task.id, body: newTask }));
     }
-    closeViewModal();
-  }, [refresh]);
+  };
 
   return (
     <Modal onClose={closeViewModal}>
@@ -83,8 +90,12 @@ function ViewTask({ taskId, closeModal }) {
             )
           </span>
           {task.subtasks.map(({ id, title, completed }) => (
-            <Subtask key={id} completed={completed}>
-              <Checkbox>{completed && <CheckIcon />}</Checkbox>
+            <Subtask
+              key={id}
+              completed={completed}
+              onClick={() => updateSubtask(id)}
+            >
+              <Checkbox completed={completed}>{completed && <CheckIcon />}</Checkbox>
               <p>{title}</p>
             </Subtask>
           ))}
@@ -94,11 +105,17 @@ function ViewTask({ taskId, closeModal }) {
           label="Current Status"
           value={status}
           setValue={setStatus}
+          updateTaskColumn={updateTaskColumn}
         />
       </ViewTaskContent>
       ) }
       {showDeleteModal && (
-        <DeleteModal id={taskId} closeModal={setShowDeleteModal} data={dataTask} />
+        <DeleteModal
+          id={taskId}
+          closeModal={setShowDeleteModal}
+          data={dataTask}
+          closeViewModal={closeViewModal}
+        />
       )}
       {showEditModal && (
       <CreateTask taskId={taskId} closeModal={setShowEditModal} />
@@ -153,6 +170,11 @@ const ConfigModal = styled.div`
   box-shadow: 0px 10px 20px rgba(54, 78, 126, 0.25);
   background: ${({ theme }) => theme.bgPrimary};
   width: 192px;
+
+  @media (max-width: 700px) {
+    left: -166px;
+    top: 30px;
+  }
 `;
 
 const EditButton = styled.div`
@@ -192,6 +214,7 @@ const Subtask = styled.div`
   align-items: center;
   gap: 16px;
   font-weight: 700;
+  cursor: pointer;
   p {
     text-decoration: ${({ completed }) => (completed ? 'line-through' : 'none')};
     opacity: ${({ completed }) => (completed ? 0.5 : 1)};
@@ -199,12 +222,16 @@ const Subtask = styled.div`
 `;
 
 const Checkbox = styled.div`
-  height: 16px;
-  width: 16px;
+  height: 18px;
+  width: 18px;
   border: 1px solid ${({ theme }) => theme.stroke};
   border-radius: 2px;
   background: ${({ theme, completed }) => (completed ? theme.colorPrimary : theme.white)};
   display: flex;
   align-items: center;
   justify-content: center;
+  svg {
+    position: relative;
+    top: 1px;
+  }
 `;
