@@ -12,6 +12,7 @@ import { ReactComponent as LogoutIcon } from '../../assets/logout.svg';
 import Button from '../Interactive/Button';
 import useMedia from '../../Hooks/useMedia';
 import { showSidebar } from '../../store/sidebar';
+import { updateBoardLayout } from '../../store/auth/authActions';
 
 function Header({ openBoardEdit, openBoardDelete, openCreateTask }) {
   const {
@@ -23,6 +24,8 @@ function Header({ openBoardEdit, openBoardDelete, openCreateTask }) {
   const mobile = useMedia('(max-width: 640px)');
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const simpleLayout = localStorage.getItem('simpleLayout');
+  const userId = localStorage.getItem('userId');
 
   const openModalCreateTask = () => {
     openCreateTask(true);
@@ -44,9 +47,18 @@ function Header({ openBoardEdit, openBoardDelete, openCreateTask }) {
     dispatch(showSidebar());
   };
 
+  const changeLayout = async () => {
+    const body = {
+      simpleLayout: simpleLayout !== 'true',
+    };
+    const response = await dispatch(updateBoardLayout({ userId, body }));
+    console.log(response);
+  };
+
   const logout = () => {
     localStorage.removeItem('userId');
     localStorage.removeItem('token');
+    localStorage.removeItem('simpleLayout');
     navigate('/login');
   };
 
@@ -88,6 +100,11 @@ function Header({ openBoardEdit, openBoardDelete, openCreateTask }) {
                 <DeleteButton onClick={openModalDeleteBoard}>
                   Delete Board
                 </DeleteButton>
+                {mobile && (
+                  <ChangeLayout onClick={changeLayout}>
+                    {simpleLayout === 'true' ? 'Default Layout' : 'Simple Layout' }
+                  </ChangeLayout>
+                )}
                 <Logout onClick={logout}>
                   Logout
                   <LogoutIcon />
@@ -233,4 +250,12 @@ const Logout = styled.div`
   svg path {
     fill: #fff;
   }
+`;
+
+const ChangeLayout = styled.div`
+  color: ${({ theme }) => theme.textSecundary};
+  text-align: start;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: 600;
 `;

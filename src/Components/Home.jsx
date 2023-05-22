@@ -29,6 +29,7 @@ function Home({ setTheme }) {
     userId: localStorage.getItem('userId'),
     type: 'board',
   };
+  const simpleLayout = localStorage.getItem('simpleLayout');
 
   const handleSidebar = () => {
     dispatch(showSidebar());
@@ -56,13 +57,13 @@ function Home({ setTheme }) {
             )}
           </>
         )}
-        {false ? (
-          <Board showModalEditBoard={setShowModalEditBoard} />
-        ) : (
+        {simpleLayout === 'true' && mobile ? (
           <BoardLayoutMobile
             showModalEditBoard={setShowModalEditBoard}
             setShowModalCreateTask={setShowModalCreateTask}
           />
+        ) : (
+          <Board showModalEditBoard={setShowModalEditBoard} />
         )}
         {sidebar && mobile && (
           <SidebarMobile onClick={hiddenSidebar}>

@@ -24,3 +24,15 @@ export const loginUser = createAsyncThunk(
     }
   },
 );
+
+export const updateBoardLayout = createAsyncThunk(
+  'user/updateBoardLayout',
+  async ({ userId, body }, { rejectWithValue }) => {
+    try {
+      const response = await api.put(`/user/${userId}`, body);
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(error.response.data);
+    }
+  },
+);
