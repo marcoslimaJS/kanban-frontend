@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import styled, { ThemeProvider } from 'styled-components';
-import { Routes, Route, useNavigate } from 'react-router-dom';
+import { Routes, Route, useNavigate, useLocation } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import light from './styles/light';
 import GlobalStyle from './styles/global';
@@ -10,6 +10,7 @@ import Home from './Components/Home';
 import { getAllBoards } from './store/board/boardsActions';
 import Register from './Components/Register';
 import Loading from './Components/Interactive/Loading';
+import { clearErrorAuth } from './store/auth/auth';
 
 function App() {
   const [theme, setTheme] = useState(light);
@@ -18,6 +19,7 @@ function App() {
   const [loadingAutoLogin, setLoadingAutoLogin] = useState(false);
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const location = useLocation();
 
   const token = localStorage.getItem('token');
   const userId = localStorage.getItem('userId');
@@ -39,6 +41,10 @@ function App() {
       navigate('/');
     }
   }, [listBoards]);
+
+  useEffect(() => {
+    dispatch(clearErrorAuth());
+  }, [location]);
 
   return (
     <ThemeProvider theme={theme}>

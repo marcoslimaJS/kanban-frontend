@@ -23,6 +23,8 @@ function Board({ showModalEditBoard }) {
   const [position, setPosition] = useState(null);
   const [modalViewTask, setModalViewTask] = useState(null);
   const [dropTask, setDropTask] = useState('');
+  const [nextColumn, setNextColumn] = useState('');
+  const [columnCurrent, setColumnCurrent] = useState('');
   const isFirstRender = useRef(true);
   const dispatch = useDispatch();
 
@@ -44,7 +46,7 @@ function Board({ showModalEditBoard }) {
     return currentColumn.tasks.some(({ id }) => id === task.id);
   };
 
-  const handleMouseMove = (event, taskId) => {
+  const handleMouseMove = (event, taskId, columnId) => {
     // setWasMoved(true);
     const e = event.type === 'touchmove' ? event.touches[0] : event;
     if (isDragging) {
@@ -65,23 +67,38 @@ function Board({ showModalEditBoard }) {
           behavior: 'smooth',
         });
       }
-
-      const rect = BoardElement.current.getBoundingClientRect();
-      console.log(rect);
-      console.log(BoardElement.current.scrollLeft);
       const scroll = BoardElement.current.scrollLeft;
       const scrollTo = BoardElement.current.scrollTop;
+      console.log(scroll);
       if (sidebar) {
         setPosition({ x: e.clientX - 440 + scroll, y: e.clientY - 135 + scrollTo });
       } else {
-        setPosition({ x: e.clientX - 140 + scroll, y: e.clientY - 135 });
+        setPosition({ x: e.clientX - 140 + scroll, y: e.clientY - 135 + scrollTo });
+      }
+      const x = sidebar ? position.x + 300 : position.x;
+      const columns = columnsElement.current.filter((col) => col);
+
+      const columnsPosition = columns.map((column) => {
+        const { right } = column.getBoundingClientRect();
+        return { x: right + window.scrollX, id: column.id };
+      });
+      console.log(columnsPosition);
+      console.log(x);
+      for (let i = 0; i < columnsPosition.length; i++) {
+        if (x < (columnsPosition[i].x + scroll)) {
+          if (columnId === columns[i].id) {
+            setNextColumn('');
+            setColumnCurrent(columns[i].id);
+          } else {
+            setNextColumn(columns[i].id);
+          }
+          break;
+        }
       }
     }
   };
-  console.log(position);
 
   useEffect(() => {
-    console.log('sgsgfgfdgf');
     setPosition((pos) => pos);
   }, [BoardElement?.current?.scrollLeft]);
 
@@ -102,24 +119,24 @@ function Board({ showModalEditBoard }) {
   const adjustTaskInColumn = () => {
     const x = sidebar ? position.x + 300 : position.x;
     const columns = columnsElement.current.filter((col) => col);
-    console.log(columns);
+
     const columnsPosition = columns.map((column) => {
       const { right } = column.getBoundingClientRect();
-      return { x: right + window.scrollX };
+      return { x: right + window.scrollX, id: column.id };
     });
     let taskCurrent = allTasks.find(({ id }) => id === dropTask);
     if (taskCurrent) getAllTasksOfBoard();
     taskCurrent = allTasks.find(({ id }) => id === dropTask);
-
-    console.log(columnsPosition);
+    const scroll = BoardElement.current.scrollLeft;
 
     for (let i = 0; i < columnsPosition.length; i++) {
-      if ((x + 0) < columnsPosition[i].x) {
+      if (x < (columnsPosition[i].x + scroll)) {
         const sameColumn = taskIsAlreadyInTheColumn(columns[i], taskCurrent);
         if (!sameColumn) updateTask(columns[i], taskCurrent);
         break;
       }
     }
+    setNextColumn('');
   };
 
   const handleMouseUp = () => {
@@ -129,16 +146,13 @@ function Board({ showModalEditBoard }) {
     }
     setDropTask('');
     setPosition(null);
-    console.log('MouseUp no pulo');
   };
 
   const handleViewTaskModal = (taskId) => {
-    console.log('CLIQUEEEEEEEEEEEEEEEE');
-    console.log(taskId);
     if (false /* wasMoved */) {
       // setWasMoved(false);
     } else {
-      setModalViewTask(taskId);
+      // setModalViewTask(taskId);
     }
   };
 
@@ -146,10 +160,16 @@ function Board({ showModalEditBoard }) {
     showModalEditBoard(true);
   };
 
+  const mouseLeaveBoard = () => {
+    if (dropTask) {
+      setDropTask('');
+      setIsDragging(false);
+    }
+  };
+
   useEffect(() => {
     const columns = columnsElement?.current;
     if (columns.length) {
-      console.log('ifffffffff');
       getAllTasksOfBoard();
     }
   }, [sidebar, board?.columns]);
@@ -173,12 +193,15 @@ function Board({ showModalEditBoard }) {
     refreshBoard();
   }, [tasks.refresh, boards.refresh]);
 
-  console.log(boards?.listBoards);
-
   return (
     <div>
       {board?.columns.length ? (
-        <Container sidebar={sidebar} mobile={mobile} ref={BoardElement}>
+        <Container
+          sidebar={sidebar}
+          mobile={mobile}
+          ref={BoardElement}
+          onMouseLeave={mouseLeaveBoard}
+        >
           {board?.columns.map(({ name, id: columnId, tasks: tasksColumn }, index) => (
             <Column
               key={columnId}
@@ -186,12 +209,15 @@ function Board({ showModalEditBoard }) {
                 columnsElement.current[index] = element;
               }}
               id={columnId}
+              next={nextColumn}
+              isDragging={isDragging}
+              current={columnCurrent}
             >
               <ColumnTitle>
                 {name}
                 {`(${tasksColumn.length})`}
               </ColumnTitle>
-              {tasksColumn.map(({ title, id: taskId, subtasks }, i) => (
+              {tasksColumn.map(({ title, id: taskId, subtasks, columnId }, i) => (
                 <Task
                   ref={(element) => {
                     taskElement.current[i] = element;
@@ -199,7 +225,7 @@ function Board({ showModalEditBoard }) {
                   key={taskId}
                   onMouseDown={handleMouseDown}
                   onMouseMove={
-                  isDragging ? (e) => handleMouseMove(e, taskId) : undefined
+                  isDragging ? (e) => handleMouseMove(e, taskId, columnId) : undefined
                 }
                   onMouseUp={handleMouseUp}
                   onTouchStart={handleMouseDown}
@@ -281,9 +307,36 @@ const Container = styled.main`
 const Column = styled.div`
   display: flex;
   flex-direction: column;
+  align-items: center;
   gap: 20px;
   min-width: 280px;
-  border: 1px solid red;
+  border: 3px dashed transparent;
+  transition: 0.3s ease-in-out;
+  border-radius: 6px;
+  background: ${({ isDragging, current, id, next }) => {
+    if (isDragging) {
+      if (current === id) {
+        return 'initial';
+      }
+      if (id === next) {
+        return '#d7ffd9';
+      }
+      return '#eaedff';
+    }
+    return 'initial';
+  }};
+  border-color: ${({ isDragging, current, id, next }) => {
+    if (isDragging) {
+      if (current === id) {
+        return 'transparent';
+      }
+      if (id === next) {
+        return '#057232';
+      }
+      return '#063aac';
+    }
+    return 'transparent';
+  }};
 `;
 
 const ColumnTitle = styled.h3`
@@ -314,7 +367,7 @@ const Task = styled.div`
   font-weight: 700;
   cursor: move;
   position: ${({ drop, id }) => (drop === id ? 'absolute' : 'initial')};
-  width: 280px;
+  width: 268px;
   left: ${({ position }) => position && position.x}px;
   top: ${({ position }) => position && position.y}px;
   user-select: none;

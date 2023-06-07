@@ -153,7 +153,7 @@ export default CreateTask;
 const CreateTaskContent = styled.form`
   display: flex;
   flex-direction: column;
-  gap: 24px;
+  gap: 18px;
 `;
 
 const SubtasksContainer = styled.div`

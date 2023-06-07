@@ -40,7 +40,6 @@ const taskSlice = createSlice({
 
       .addCase(updateTask.pending, (state) => {
         state.loading = true;
-        console.log(state);
       })
       .addCase(updateTask.fulfilled, (state) => {
         state.loading = false;
@@ -53,7 +52,6 @@ const taskSlice = createSlice({
 
       .addCase(updateTaskForColumn.pending, (state) => {
         state.loading = true;
-        console.log(state);
       })
       .addCase(updateTaskForColumn.fulfilled, (state) => {
         state.loading = false;

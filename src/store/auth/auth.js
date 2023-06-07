@@ -10,7 +10,11 @@ const authSlice = createSlice({
     loading: false,
     error: null,
   },
-  reducers: {},
+  reducers: {
+    clearErrorAuth: (state) => {
+      state.error = null;
+    },
+  },
   extraReducers: (builder) => {
     builder
       .addCase(createUser.pending, (state) => {
@@ -35,7 +39,6 @@ const authSlice = createSlice({
         state.error = null;
         state.user = action.payload;
         const { token, userId, simpleLayout } = action.payload;
-        console.log(simpleLayout);
         token && localStorage.setItem('token', token);
         userId && localStorage.setItem('userId', userId);
         simpleLayout && localStorage.setItem('simpleLayout', simpleLayout);
@@ -61,3 +64,5 @@ const authSlice = createSlice({
 });
 
 export default authSlice.reducer;
+
+export const { clearErrorAuth } = authSlice.actions;

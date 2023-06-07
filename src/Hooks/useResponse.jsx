@@ -16,7 +16,7 @@ const useResponse = ({ status, type, result }) => {
 
   setTimeout(() => {
     container.remove();
-  }, 5000);
+  }, 3000);
 };
 
 export default useResponse;

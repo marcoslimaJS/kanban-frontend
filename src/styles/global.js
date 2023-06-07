@@ -29,7 +29,6 @@ const GlobalStyle = createGlobalStyle`
     font-family: 'Plus Jakarta Sans', sans-serif;
     background: ${({ theme }) => theme.bgSecundary};
     min-height: 100vh;
-
   }
 `;
 

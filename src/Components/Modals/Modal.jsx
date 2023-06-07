@@ -7,7 +7,7 @@ import { AnimeScale } from '../../styles/animations';
 function Modal({ onClose, children }) {
   return (
     <ModalOverlay onClick={onClose}>
-      <ModalWrapper onClick={(e) => e.stopPropagation()}>
+      <ModalWrapper onClick={(e) => e.stopPropagation()} >
         <CloseModalIcon>
           <CloseIcon onClick={onClose} />
         </CloseModalIcon>
@@ -40,13 +40,13 @@ const ModalOverlay = styled.div`
   align-items: center;
   z-index: 9000;
   overflow-y: auto;
-  padding: 48px 24px;
+  padding: 32px 24px;
 `;
 
 const ModalWrapper = styled.div`
   background-color: #fff;
   border-radius: 6px;
-  padding: 48px 32px 32px 32px;
+  padding: 32px;
   max-width: 480px;
   width: 100%;
   font-size: 13px;

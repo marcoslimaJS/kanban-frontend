@@ -16,28 +16,24 @@ const Task = forwardRef(
       subtasks,
     },
     ref,
-  ) => {
-    console.log(title);
-
-    return (
-      <TaskStyled
-        ref={ref}
-        onMouseDown={onMouseDown}
-        onMouseMove={onMouseMove}
-        onMouseUp={onMouseUp}
-        onClick={onClick(id)}
-        position={position}
-        drop={drop}
-      >
-        {title}
-        <Subtask>
-          {subtasks.filter(({ completed }) => completed).length}
-          of subtasks
-          {subtasks.length}
-        </Subtask>
-      </TaskStyled>
-    );
-  },
+  ) => (
+    <TaskStyled
+      ref={ref}
+      onMouseDown={onMouseDown}
+      onMouseMove={onMouseMove}
+      onMouseUp={onMouseUp}
+      onClick={onClick(id)}
+      position={position}
+      drop={drop}
+    >
+      {title}
+      <Subtask>
+        {subtasks.filter(({ completed }) => completed).length}
+        of subtasks
+        {subtasks.length}
+      </Subtask>
+    </TaskStyled>
+  ),
 );
 Task.propTypes = {
   id: PropTypes.string,
