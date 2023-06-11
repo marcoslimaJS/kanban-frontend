@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
 import { ReactComponent as ArrowDown } from '../../assets/icon-chevron-down.svg';
+import { AnimeDown } from '../../styles/animations';
 
 function DropDown({ options, value, setValue, label, updateTaskColumn }) {
   const [isOpen, setIsOpen] = useState(false);
@@ -90,7 +91,7 @@ const DropdownButton = styled.div`
 `;
 
 const DropdownOptions = styled.ul`
-  position: absolute;
+  position: relative;
   top: 100%;
   left: 0;
   right: 0;
@@ -99,6 +100,8 @@ const DropdownOptions = styled.ul`
   list-style-type: none;
   z-index: 1;
   box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+  animation: ${AnimeDown} 0.5s ease-in-out;
+  margin-bottom: 10px;
 `;
 
 const DropdownOption = styled.li`

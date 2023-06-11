@@ -12,6 +12,7 @@ import { ReactComponent as Remove } from '../../assets/icon-cross.svg';
 import { createTask, updateTask } from '../../store/board/tasksActions';
 import { getTaskById } from '../../store/board/tasks';
 import useResponse from '../../Hooks/useResponse';
+import { AnimeDown } from '../../styles/animations';
 
 function CreateTask({ taskId, closeModal }) {
   const task = useSelector(({ boards }) => getTaskById(boards.board, taskId));
@@ -173,6 +174,7 @@ const SubtaskInput = styled.div`
   align-items: center;
   gap: 16px;
   margin-bottom: 12px;
+  animation: ${AnimeDown} 0.5s ease-in-out;
   svg {
     cursor: pointer;
   }

@@ -7,11 +7,13 @@ import { AnimeScale } from '../../styles/animations';
 function Modal({ onClose, children }) {
   return (
     <ModalOverlay onClick={onClose}>
-      <ModalWrapper onClick={(e) => e.stopPropagation()} >
-        <CloseModalIcon>
-          <CloseIcon onClick={onClose} />
-        </CloseModalIcon>
-        {children}
+      <ModalWrapper>
+        <ModalContent onClick={(e) => e.stopPropagation()}>
+          <CloseModalIcon>
+            <CloseIcon onClick={onClose} />
+          </CloseModalIcon>
+          {children}
+        </ModalContent>
       </ModalWrapper>
     </ModalOverlay>
   );
@@ -39,7 +41,6 @@ const ModalOverlay = styled.div`
   justify-content: center;
   align-items: center;
   z-index: 9000;
-  overflow-y: auto;
   padding: 32px 24px;
 `;
 
@@ -47,12 +48,32 @@ const ModalWrapper = styled.div`
   background: ${({ theme }) => theme.bgPrimary};
   color: ${({ theme }) => theme.textPrimary};
   border-radius: 6px;
-  padding: 42px 32px 32px 32px;
+  padding: 48px 32px 32px 24px;
   max-width: 480px;
   width: 100%;
   font-size: 13px;
   animation: ${AnimeScale} 0.5s ease-in-out;
   position: relative;
+`;
+
+const ModalContent = styled.div`
+  padding: 0px 24px;
+  max-height: calc(100vh - 120px);
+  overflow-y: auto;
+  &::-webkit-scrollbar {
+    width: 8px;
+    background: ${({ theme }) => theme.scrollColor};
+  }
+  &::-webkit-scrollbar-track {
+    border-radius: 4px;
+  }
+  &::-webkit-scrollbar-thumb {
+    background: ${({ theme }) => theme.colorPrimary};
+    border-radius: 10px;
+  }
+  &::-webkit-scrollbar-thumb:hover {
+    background: ${({ theme }) => theme.colorSecundary};
+  }
 `;
 
 const CloseModalIcon = styled.span`

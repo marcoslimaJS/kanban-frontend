@@ -1,8 +1,8 @@
 /* eslint-disable no-param-reassign */
 import axios from 'axios';
 
-// const baseURL = 'https://kanban-rixq.onrender.com';
-const baseURL = 'http://localhost:3000/';
+const baseURL = 'https://kanban-rixq.onrender.com';
+// const baseURL = 'http://localhost:3000/';
 
 const api = axios.create({
   baseURL,

@@ -156,7 +156,7 @@ function Board({ showModalEditBoard }) {
     if (false /* wasMoved */) {
       // setWasMoved(false);
     } else {
-      // setModalViewTask(taskId);
+      setModalViewTask(taskId);
     }
   };
 

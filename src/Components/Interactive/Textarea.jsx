@@ -60,6 +60,7 @@ const TextareaStyle = styled.textarea`
   height: 112px;
   border: 1px solid ${({ theme }) => theme.stroke};
   background:  ${({ theme }) => theme.bgPrimary};
+  color: ${({ theme }) => theme.textPrimary};
   font-family: 'Plus Jakarta Sans';
   &:focus {
     border-color: ${({ theme }) => theme.colorPrimary};
@@ -83,6 +84,6 @@ const Error = styled.span`
   color: ${({ theme }) => theme.delete};
   position: absolute;
   right: 16px;
-  bottom: 34px;
+  bottom: 54px;
   font-size: 14px;
 `;

@@ -11,6 +11,7 @@ const light = {
   shadowSecundary: '0px 4px 6px rgba(54, 78, 126, 0.101545)',
   possibleNextColumns: '#eaedff',
   nextColumn: '#d7ffd9',
+  scrollColor: '#dddaff',
 
   // Constant Colors
   colorPrimary: '#635FC7',

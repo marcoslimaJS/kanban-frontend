@@ -61,6 +61,7 @@ const InputStyle = styled.input`
   padding: 12px 16px;
   border: 1px solid ${({ theme }) => theme.stroke};
   background:  ${({ theme }) => theme.bgPrimary};
+  color: ${({ theme }) => theme.textPrimary};
   font-family: 'Plus Jakarta Sans';
   &:focus {
     border-color: ${({ theme }) => theme.colorPrimary};

@@ -10,6 +10,7 @@ const dark = {
   shadowSecundary: 'rgba(0, 0, 0, 0.25) 0px 3px 8px',
   possibleNextColumns: '#1e1f33',
   nextColumn: '#1b2b1e',
+  scrollColor: '#414255',
 
   // Constant Colors
   colorPrimary: '#635FC7',
