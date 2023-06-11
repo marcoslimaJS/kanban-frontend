@@ -72,7 +72,7 @@ const Label = styled.p`
   margin-bottom: 8px;
   font-weight: 700;
   font: 14px;
-  color: ${({ theme }) => theme.textSecundary};
+  color: ${({ theme }) => theme.textPrimary};
 `;
 
 const DropdownButton = styled.div`

@@ -59,6 +59,7 @@ const TextareaStyle = styled.textarea`
   overflow-y: hidden;
   height: 112px;
   border: 1px solid ${({ theme }) => theme.stroke};
+  background:  ${({ theme }) => theme.bgPrimary};
   font-family: 'Plus Jakarta Sans';
   &:focus {
     border-color: ${({ theme }) => theme.colorPrimary};

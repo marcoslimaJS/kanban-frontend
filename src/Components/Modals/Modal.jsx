@@ -44,9 +44,10 @@ const ModalOverlay = styled.div`
 `;
 
 const ModalWrapper = styled.div`
-  background-color: #fff;
+  background: ${({ theme }) => theme.bgPrimary};
+  color: ${({ theme }) => theme.textPrimary};
   border-radius: 6px;
-  padding: 32px;
+  padding: 42px 32px 32px 32px;
   max-width: 480px;
   width: 100%;
   font-size: 13px;

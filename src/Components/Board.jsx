@@ -69,7 +69,7 @@ function Board({ showModalEditBoard }) {
       }
       const scroll = BoardElement.current.scrollLeft;
       const scrollTo = BoardElement.current.scrollTop;
-      console.log(scroll);
+
       if (sidebar) {
         setPosition({ x: e.clientX - 440 + scroll, y: e.clientY - 135 + scrollTo });
       } else {
@@ -85,7 +85,8 @@ function Board({ showModalEditBoard }) {
       console.log(columnsPosition);
       console.log(x);
       for (let i = 0; i < columnsPosition.length; i++) {
-        if (x < (columnsPosition[i].x + scroll)) {
+        const isLastColumn = (i === columnsPosition.length - 1) ? 0 : 120;
+        if ((x + isLastColumn) < (columnsPosition[i].x + scroll)) {
           if (columnId === columns[i].id) {
             setNextColumn('');
             setColumnCurrent(columns[i].id);
@@ -93,6 +94,8 @@ function Board({ showModalEditBoard }) {
             setNextColumn(columns[i].id);
           }
           break;
+        } else if (x > columnsPosition[columnsPosition.length - 1].x) {
+          setNextColumn('');
         }
       }
     }
@@ -130,7 +133,8 @@ function Board({ showModalEditBoard }) {
     const scroll = BoardElement.current.scrollLeft;
 
     for (let i = 0; i < columnsPosition.length; i++) {
-      if (x < (columnsPosition[i].x + scroll)) {
+      const isLastColumn = (i === columnsPosition.length - 1) ? 0 : 120;
+      if ((x + isLastColumn) < (columnsPosition[i].x + scroll)) {
         const sameColumn = taskIsAlreadyInTheColumn(columns[i], taskCurrent);
         if (!sameColumn) updateTask(columns[i], taskCurrent);
         break;
@@ -313,15 +317,15 @@ const Column = styled.div`
   border: 3px dashed transparent;
   transition: 0.3s ease-in-out;
   border-radius: 6px;
-  background: ${({ isDragging, current, id, next }) => {
+  background: ${({ theme, isDragging, current, id, next }) => {
     if (isDragging) {
       if (current === id) {
         return 'initial';
       }
       if (id === next) {
-        return '#d7ffd9';
+        return theme.nextColumn;
       }
-      return '#eaedff';
+      return theme.possibleNextColumns;
     }
     return 'initial';
   }};
@@ -340,6 +344,7 @@ const Column = styled.div`
 `;
 
 const ColumnTitle = styled.h3`
+  color: ${({ theme }) => theme.textSecundary};
   text-transform: uppercase;
   letter-spacing: 2.4px;
   font-size: 14px;
@@ -359,8 +364,8 @@ const ColumnTitle = styled.h3`
 
 const Task = styled.div`
   background: ${({ theme }) => theme.bgPrimary};
-  background: #b8b8ce;
-  box-shadow: 0px 4px 6px rgba(54, 78, 126, 0.101545);
+  color: ${({ theme }) => theme.textPrimary};
+  box-shadow: ${({ theme }) => theme.shadowSecundary};
   padding: 22px 16px;
   border-radius: 8px;
   font-size: 16px;

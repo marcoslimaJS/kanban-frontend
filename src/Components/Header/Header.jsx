@@ -1,10 +1,10 @@
 import React, { useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
-// import { ReactComponent as LogoLight } from '../../assets/logo-light.svg';
 import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { ReactComponent as LogoDark } from '../../assets/logo-dark.svg';
+import { ReactComponent as LogoLight } from '../../assets/logo-light.svg';
 import { ReactComponent as LogoMobile } from '../../assets/logo-mobile.svg';
 import { ReactComponent as ConfigSVG } from '../../assets/icon-vertical-ellipsis.svg';
 import { ReactComponent as ArrowIcon } from '../../assets/icon-chevron-down.svg';
@@ -13,9 +13,9 @@ import Button from '../Interactive/Button';
 import useMedia from '../../Hooks/useMedia';
 import { showSidebar } from '../../store/sidebar';
 import { updateBoardLayout } from '../../store/auth/authActions';
-import { AnimeDown, AnimeLeft, AnimeScale } from '../../styles/animations';
+import { AnimeDown } from '../../styles/animations';
 
-function Header({ openBoardEdit, openBoardDelete, openCreateTask }) {
+function Header({ theme, openBoardEdit, openBoardDelete, openCreateTask }) {
   const {
     boards: { board },
     sidebar,
@@ -27,6 +27,7 @@ function Header({ openBoardEdit, openBoardDelete, openCreateTask }) {
   const navigate = useNavigate();
   const simpleLayout = localStorage.getItem('simpleLayout');
   const userId = localStorage.getItem('userId');
+  const currentLogo = theme === 'light' ? <LogoDark /> : <LogoLight />;
 
   const openModalCreateTask = () => {
     openCreateTask(true);
@@ -80,7 +81,7 @@ function Header({ openBoardEdit, openBoardDelete, openCreateTask }) {
   return (
     <HeaderElement>
       <Logo sidebar={sidebar} mobile={mobile}>
-        {!mobile ? <LogoDark /> : <LogoMobile />}
+        {!mobile ? currentLogo : <LogoMobile />}
       </Logo>
       <HeaderContent>
         <TitleBoard onClick={mobile ? handleSidebar : undefined}>
@@ -120,12 +121,14 @@ function Header({ openBoardEdit, openBoardDelete, openCreateTask }) {
 }
 
 Header.propTypes = {
+  theme: PropTypes.string,
   openBoardEdit: PropTypes.func,
   openBoardDelete: PropTypes.func,
   openCreateTask: PropTypes.func,
 };
 
 Header.defaultProps = {
+  theme: 'light',
   openBoardEdit: () => {},
   openBoardDelete: () => {},
   openCreateTask: () => {},
@@ -174,6 +177,7 @@ const HeaderContent = styled.div`
 `;
 
 const TitleBoard = styled.h1`
+  color: ${({ theme }) => theme.textPrimary};
   font-size: 24px;
   display: flex;
   align-items: center;
@@ -213,10 +217,10 @@ const ConfigModal = styled.div`
   display: flex;
   flex-direction: column;
   gap: 20px;
-  box-shadow: 0px 10px 20px rgba(54, 78, 126, 0.25);
+  box-shadow: ${({ theme }) => theme.shadowPrimary};
   background: ${({ theme }) => theme.bgPrimary};
   width: 192px;
-  animation: ${AnimeScale} 0.5s ease-in-out;
+  animation: ${AnimeDown} 0.5s ease-in-out;
 `;
 
 const EditButton = styled.button`

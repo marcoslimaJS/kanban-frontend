@@ -6,6 +6,10 @@ const dark = {
   textPrimary: '#FFFFFF',
   textSecundary: '#828FA3',
   lines: '#3E3F4E',
+  shadowPrimary: 'rgba(0, 0, 0, 0.25) 0px 3px 8px',
+  shadowSecundary: 'rgba(0, 0, 0, 0.25) 0px 3px 8px',
+  possibleNextColumns: '#1e1f33',
+  nextColumn: '#1b2b1e',
 
   // Constant Colors
   colorPrimary: '#635FC7',

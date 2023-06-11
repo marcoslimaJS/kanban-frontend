@@ -131,10 +131,6 @@ const Content = styled.div`
   padding: 20px;
   max-width: 450px;
 
-  input {
-    margin-bottom: 20px;
-  }
-
   @media (max-width: 675px) {
     width: 100%;
     margin-top: 0px;
@@ -164,6 +160,9 @@ const Title = styled.h1`
 `;
 
 const FormLogin = styled.form`
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
   label {
     color: #fff;
   }

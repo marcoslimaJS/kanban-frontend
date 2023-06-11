@@ -10,6 +10,7 @@ import DropDown from '../Interactive/DropDown';
 import DeleteModal from './DeleteModal';
 import CreateTask from './CreateTask';
 import { updateTask } from '../../store/board/tasksActions';
+import { AnimeDown } from '../../styles/animations';
 
 function ViewTask({ taskId, closeModal }) {
   const task = useSelector(({ boards }) => getTaskById(boards.board, taskId));
@@ -167,9 +168,10 @@ const ConfigModal = styled.div`
   display: flex;
   flex-direction: column;
   gap: 20px;
-  box-shadow: 0px 10px 20px rgba(54, 78, 126, 0.25);
+  box-shadow: ${({ theme }) => theme.shadowPrimary};
   background: ${({ theme }) => theme.bgPrimary};
   width: 192px;
+  animation: ${AnimeDown} 0.4s ease-in-out;
 
   @media (max-width: 700px) {
     left: -166px;
@@ -181,12 +183,18 @@ const EditButton = styled.div`
   color: ${({ theme }) => theme.textSecundary};
   text-align: start;
   cursor: pointer;
+  &:hover {
+    color: ${({ theme }) => theme.textPrimary};
+  }
 `;
 
 const DeleteButton = styled.div`
   color: ${({ theme }) => theme.delete};
   text-align: start;
   cursor: pointer;
+  &:hover {
+    color: red;
+  }
 `;
 
 const Description = styled.div`
@@ -202,7 +210,7 @@ const Subtasks = styled.div`
   span {
     font-weight: 700;
     margin-bottom: 8px;
-    color: ${({ theme }) => theme.textSecundary};
+    color: ${({ theme }) => (theme.name === 'light' ? theme.textSecundary : theme.textPrimary)};
   }
 `;
 
@@ -226,7 +234,7 @@ const Checkbox = styled.div`
   width: 18px;
   border: 1px solid ${({ theme }) => theme.stroke};
   border-radius: 2px;
-  background: ${({ theme, completed }) => (completed ? theme.colorPrimary : theme.white)};
+  background: ${({ theme, completed }) => (completed ? theme.colorPrimary : theme.bgPrimary)};
   display: flex;
   align-items: center;
   justify-content: center;

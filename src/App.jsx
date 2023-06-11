@@ -57,7 +57,7 @@ function App() {
             path="/"
             element={(
               <ProtectedRoute>
-                <Home setTheme={setTheme} />
+                <Home theme={theme.name} setTheme={setTheme} />
               </ProtectedRoute>
               )}
           />

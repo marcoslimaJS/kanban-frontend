@@ -48,6 +48,8 @@ Input.defaultProps = {
 export default Input;
 
 const Container = styled.div`
+  display: flex;
+  flex-direction: column;
   position: relative;
 `;
 
@@ -58,6 +60,7 @@ const InputStyle = styled.input`
   font-weight: 700;
   padding: 12px 16px;
   border: 1px solid ${({ theme }) => theme.stroke};
+  background:  ${({ theme }) => theme.bgPrimary};
   font-family: 'Plus Jakarta Sans';
   &:focus {
     border-color: ${({ theme }) => theme.colorPrimary};
@@ -81,6 +84,6 @@ const Error = styled.span`
   color: ${({ theme }) => theme.delete};
   position: absolute;
   right: 16px;
-  bottom: 34px;
+  bottom: 12px;
   font-size: 14px;
 `;

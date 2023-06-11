@@ -7,6 +7,10 @@ const light = {
   textPrimary: '#000112',
   textSecundary: '#828FA3',
   lines: '#E4EBFA',
+  shadowPrimary: 'rgba(0, 0, 0, 0.25) 0px 3px 8px',
+  shadowSecundary: '0px 4px 6px rgba(54, 78, 126, 0.101545)',
+  possibleNextColumns: '#eaedff',
+  nextColumn: '#d7ffd9',
 
   // Constant Colors
   colorPrimary: '#635FC7',

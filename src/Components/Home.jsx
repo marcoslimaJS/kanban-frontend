@@ -14,7 +14,7 @@ import DeleteModal from './Modals/DeleteModal';
 import CreateTask from './Modals/CreateTask';
 import BoardLayoutMobile from './BoardLayoutMobile';
 
-function Home({ setTheme }) {
+function Home({ theme, setTheme }) {
   const dispatch = useDispatch();
   const {
     sidebar,
@@ -42,6 +42,7 @@ function Home({ setTheme }) {
   return (
     <Container>
       <Header
+        theme={theme}
         openBoardEdit={setShowModalEditBoard}
         openBoardDelete={setShowModalDeleteBoard}
         openCreateTask={setShowModalCreateTask}
@@ -90,10 +91,12 @@ function Home({ setTheme }) {
 
 Home.propTypes = {
   setTheme: PropTypes.func,
+  theme: PropTypes.string,
 };
 
 Home.defaultProps = {
   setTheme: () => {},
+  theme: 'light',
 };
 
 export default Home;
