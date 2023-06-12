@@ -46,27 +46,31 @@ function Board({ showModalEditBoard }) {
     return currentColumn.tasks.some(({ id }) => id === task.id);
   };
 
+  const moveScrollToHorizontal = (e) => {
+    const screenWidth = window.innerWidth;
+    const scrollThreshold = mobile ? 100 : 150;
+
+    if (e.clientX < scrollThreshold + (sidebar ? 310 : 10)) {
+      // scroll para esquerda
+      BoardElement.current.scrollBy({
+        left: -150,
+        behavior: 'smooth',
+      });
+    } else if (e.clientX > screenWidth - scrollThreshold) {
+      // scroll para direita
+      BoardElement.current.scrollBy({
+        left: 200,
+        behavior: 'smooth',
+      });
+    }
+  };
+
   const handleMouseMove = (event, taskId, columnId) => {
     // setWasMoved(true);
     const e = event.type === 'touchmove' ? event.touches[0] : event;
     if (isDragging) {
       setDropTask(taskId);
-      const screenWidth = window.innerWidth;
-      const scrollThreshold = mobile ? 100 : 150;
-
-      if (e.clientX < scrollThreshold + (sidebar ? 310 : 10)) {
-        // scroll para esquerda
-        BoardElement.current.scrollBy({
-          left: -150,
-          behavior: 'smooth',
-        });
-      } else if (e.clientX > screenWidth - scrollThreshold) {
-        // scroll para direita
-        BoardElement.current.scrollBy({
-          left: 200,
-          behavior: 'smooth',
-        });
-      }
+      moveScrollToHorizontal(e);
       const scroll = BoardElement.current.scrollLeft;
       const scrollTo = BoardElement.current.scrollTop;
 
@@ -128,7 +132,7 @@ function Board({ showModalEditBoard }) {
       return { x: right + window.scrollX, id: column.id };
     });
     let taskCurrent = allTasks.find(({ id }) => id === dropTask);
-    if (taskCurrent) getAllTasksOfBoard();
+    if (!taskCurrent) getAllTasksOfBoard();
     taskCurrent = allTasks.find(({ id }) => id === dropTask);
     const scroll = BoardElement.current.scrollLeft;
 
@@ -156,7 +160,7 @@ function Board({ showModalEditBoard }) {
     if (false /* wasMoved */) {
       // setWasMoved(false);
     } else {
-      setModalViewTask(taskId);
+      // setModalViewTask(taskId);
     }
   };
 
@@ -221,7 +225,7 @@ function Board({ showModalEditBoard }) {
                 {name}
                 {`(${tasksColumn.length})`}
               </ColumnTitle>
-              {tasksColumn.map(({ title, id: taskId, subtasks, columnId }, i) => (
+              {tasksColumn.map(({ title, id: taskId, subtasks, columnId: idColumn }, i) => (
                 <Task
                   ref={(element) => {
                     taskElement.current[i] = element;
@@ -229,7 +233,7 @@ function Board({ showModalEditBoard }) {
                   key={taskId}
                   onMouseDown={handleMouseDown}
                   onMouseMove={
-                  isDragging ? (e) => handleMouseMove(e, taskId, columnId) : undefined
+                  isDragging ? (e) => handleMouseMove(e, taskId, idColumn) : undefined
                 }
                   onMouseUp={handleMouseUp}
                   onTouchStart={handleMouseDown}
