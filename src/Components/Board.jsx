@@ -19,7 +19,7 @@ function Board({ showModalEditBoard }) {
   const taskElement = useRef([]);
   const [allTasks, setAllTasks] = useState([]);
   const [isDragging, setIsDragging] = useState(false);
-  // const [wasMoved, setWasMoved] = useState(false);
+  const [wasMoved, setWasMoved] = useState(false);
   const [position, setPosition] = useState(null);
   const [modalViewTask, setModalViewTask] = useState(null);
   const [dropTask, setDropTask] = useState('');
@@ -28,7 +28,9 @@ function Board({ showModalEditBoard }) {
   const isFirstRender = useRef(true);
   const dispatch = useDispatch();
 
-  const handleMouseDown = () => {
+  const handleMouseDown = (columnId, taskId) => {
+    setColumnCurrent(columnId);
+    setDropTask(taskId);
     setIsDragging(true);
   };
 
@@ -65,42 +67,39 @@ function Board({ showModalEditBoard }) {
     }
   };
 
-  const handleMouseMove = (event, taskId, columnId) => {
-    // setWasMoved(true);
+  const handleMouseMoveInBoard = (event) => {
     const e = event.type === 'touchmove' ? event.touches[0] : event;
-    if (isDragging) {
-      setDropTask(taskId);
-      moveScrollToHorizontal(e);
-      const scroll = BoardElement.current.scrollLeft;
-      const scrollTo = BoardElement.current.scrollTop;
+    setWasMoved(true);
 
-      if (sidebar) {
-        setPosition({ x: e.clientX - 440 + scroll, y: e.clientY - 135 + scrollTo });
-      } else {
-        setPosition({ x: e.clientX - 140 + scroll, y: e.clientY - 135 + scrollTo });
-      }
-      const x = sidebar ? position.x + 300 : position.x;
-      const columns = columnsElement.current.filter((col) => col);
+    moveScrollToHorizontal(e);
+    const scroll = BoardElement.current.scrollLeft;
+    const scrollTo = BoardElement.current.scrollTop;
 
-      const columnsPosition = columns.map((column) => {
-        const { right } = column.getBoundingClientRect();
-        return { x: right + window.scrollX, id: column.id };
-      });
-      console.log(columnsPosition);
-      console.log(x);
-      for (let i = 0; i < columnsPosition.length; i++) {
-        const isLastColumn = (i === columnsPosition.length - 1) ? 0 : 120;
-        if ((x + isLastColumn) < (columnsPosition[i].x + scroll)) {
-          if (columnId === columns[i].id) {
-            setNextColumn('');
-            setColumnCurrent(columns[i].id);
-          } else {
-            setNextColumn(columns[i].id);
-          }
-          break;
-        } else if (x > columnsPosition[columnsPosition.length - 1].x) {
+    if (sidebar) {
+      setPosition({ x: e.clientX - 440 + scroll, y: e.clientY - 135 + scrollTo });
+    } else {
+      setPosition({ x: e.clientX - 140 + scroll, y: e.clientY - 135 + scrollTo });
+    }
+    const x = sidebar && position?.x ? position.x + 300 : position?.x;
+    const columns = columnsElement.current.filter((col) => col);
+
+    const columnsPosition = columns.map((column) => {
+      const { right } = column.getBoundingClientRect();
+      return { x: right + window.scrollX, id: column.id };
+    });
+
+    for (let i = 0; i < columnsPosition.length; i++) {
+      const isLastColumn = (i === columnsPosition.length - 1) ? 0 : 120;
+      if ((x + isLastColumn) < (columnsPosition[i].x + scroll)) {
+        if (columnCurrent === columns[i].id) {
           setNextColumn('');
+          setColumnCurrent(columns[i].id);
+        } else {
+          setNextColumn(columns[i].id);
         }
+        break;
+      } else if (x > columnsPosition[columnsPosition.length - 1].x) {
+        setNextColumn('');
       }
     }
   };
@@ -147,39 +146,39 @@ function Board({ showModalEditBoard }) {
     setNextColumn('');
   };
 
-  const handleMouseUp = () => {
+  const clearBoardStates = () => {
     setIsDragging(false);
-    if (position) {
-      adjustTaskInColumn();
-    }
     setDropTask('');
     setPosition(null);
   };
 
   const handleViewTaskModal = (taskId) => {
-    if (false /* wasMoved */) {
-      // setWasMoved(false);
+    if (wasMoved) {
+      setWasMoved(false);
     } else {
-      // setModalViewTask(taskId);
+      setModalViewTask(taskId);
     }
+  };
+
+  const handleMouseUp = (taskId) => {
+    if (position) {
+      adjustTaskInColumn();
+    }
+    handleViewTaskModal(taskId);
+    clearBoardStates();
   };
 
   const openEditBoard = () => {
     showModalEditBoard(true);
   };
 
-  const mouseLeaveBoard = () => {
-    if (dropTask) {
-      setDropTask('');
-      setIsDragging(false);
-    }
-  };
-
+  // Pega a posição das tasks novamente caso altera o sidebar
   useEffect(() => {
     const columns = columnsElement?.current;
     if (columns.length) {
       getAllTasksOfBoard();
     }
+    clearBoardStates();
   }, [sidebar, board?.columns]);
 
   useEffect(() => {
@@ -208,7 +207,12 @@ function Board({ showModalEditBoard }) {
           sidebar={sidebar}
           mobile={mobile}
           ref={BoardElement}
-          onMouseLeave={mouseLeaveBoard}
+          onMouseMove={
+            isDragging ? (e) => handleMouseMoveInBoard(e) : undefined
+          }
+          onTouchMove={
+            isDragging ? (e) => handleMouseMoveInBoard(e) : undefined
+          }
         >
           {board?.columns.map(({ name, id: columnId, tasks: tasksColumn }, index) => (
             <Column
@@ -231,17 +235,10 @@ function Board({ showModalEditBoard }) {
                     taskElement.current[i] = element;
                   }}
                   key={taskId}
-                  onMouseDown={handleMouseDown}
-                  onMouseMove={
-                  isDragging ? (e) => handleMouseMove(e, taskId, idColumn) : undefined
-                }
-                  onMouseUp={handleMouseUp}
-                  onTouchStart={handleMouseDown}
-                  onTouchMove={
-                  isDragging ? (e) => handleMouseMove(e, taskId) : undefined
-                }
-                  onTouchEnd={handleMouseUp}
-                  onClick={() => handleViewTaskModal(taskId)}
+                  onMouseDown={() => handleMouseDown(idColumn, taskId)}
+                  onMouseUp={() => handleMouseUp(taskId)}
+                  onTouchStart={() => handleMouseDown(idColumn, taskId)}
+                  onTouchEnd={() => handleMouseUp(taskId)}
                   position={position}
                   drop={dropTask}
                   id={taskId}
@@ -375,7 +372,7 @@ const Task = styled.div`
   font-size: 16px;
   font-weight: 700;
   cursor: move;
-  position: ${({ drop, id }) => (drop === id ? 'absolute' : 'initial')};
+  position: ${({ drop, id, position }) => ((drop === id && position) ? 'absolute' : 'initial')};
   width: 268px;
   left: ${({ position }) => position && position.x}px;
   top: ${({ position }) => position && position.y}px;
