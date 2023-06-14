@@ -143,7 +143,7 @@ const HeaderElement = styled.header`
   background: ${({ theme }) => theme.bgPrimary};
   position: relative;
   z-index: 500;
-  box-shadow: 3px 4px 6px rgba(54, 78, 126, 0.101545);
+  box-shadow: ${({ theme }) => theme.shadowSecundary};
   max-height: 90px;
   min-height: 90px;
 `;
@@ -228,6 +228,10 @@ const EditButton = styled.button`
   text-align: start;
   cursor: pointer;
   font-size: 16px;
+  transition: 0.3s;
+  &:hover {
+    color: ${({ theme }) => theme.textPrimary};
+  }
 `;
 
 const DeleteButton = styled.button`
@@ -235,6 +239,10 @@ const DeleteButton = styled.button`
   text-align: start;
   cursor: pointer;
   font-size: 16px;
+  transition: 0.3s;
+  &:hover {
+    color: ${({ theme }) => theme.deleteHover};
+  }
 `;
 
 const Logout = styled.div`
@@ -248,6 +256,7 @@ const Logout = styled.div`
   border-radius: 6px;
   cursor: pointer;
   color: #fff;
+  transition: 0.7s ease-in-out;
   svg {
     width: 20px;
     height: 20px;
@@ -255,6 +264,10 @@ const Logout = styled.div`
   }
   svg path {
     fill: #fff;
+  }
+  &:hover {
+    color: #fff;
+    background: #000;
   }
 `;
 
@@ -264,4 +277,7 @@ const ChangeLayout = styled.div`
   cursor: pointer;
   font-size: 16px;
   font-weight: 600;
+  &:hover {
+    color: ${({ theme }) => theme.textPrimary};
+  }
 `;

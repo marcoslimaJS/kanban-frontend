@@ -36,8 +36,6 @@ function DeleteModal({ id, closeModal, data, closeViewModal }) {
       });
       if (response.meta.requestStatus === 'fulfilled') {
         const firstId = boards.listBoards[0]?.id;
-        console.log(firstId);
-        console.log(boards.listBoards);
         dispatch(boardData(firstId));
       }
     }

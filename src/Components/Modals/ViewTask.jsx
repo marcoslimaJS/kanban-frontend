@@ -161,8 +161,8 @@ const ConfigButton = styled.button`
 
 const ConfigModal = styled.div`
   position: absolute;
-  top: 45px;
-  left: -86px;
+  top: 40px;
+  right: 10px;
   padding: 20px;
   border-radius: 8px;
   display: flex;

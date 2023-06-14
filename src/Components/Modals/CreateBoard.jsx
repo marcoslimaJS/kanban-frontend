@@ -16,12 +16,9 @@ function CreateBoard({ boardId, closeModal }) {
   const dispatch = useDispatch();
   const name = useForm(board?.name);
   const [columns, setColumns] = useState(board?.columns || []);
-  const [status, setStatus] = useState('');
   const closeModalCreateBoard = () => {
     closeModal(false);
   };
-  console.log(name.value);
-  console.log(columns);
   const createNewColumn = () => {
     setColumns([...columns, { name: '', id: '' }]);
   };

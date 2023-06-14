@@ -7,6 +7,7 @@ import useMedia from '../Hooks/useMedia';
 import Button from './Interactive/Button';
 import Loading from './Interactive/Loading';
 import { boardData } from '../store/board/boardsActions';
+import colors from './helper/colors';
 
 function BoardLayoutMobile({ showModalEditBoard, setShowModalCreateTask }) {
   const { board } = useSelector((state) => state.boards);
@@ -67,6 +68,7 @@ function BoardLayoutMobile({ showModalEditBoard, setShowModalCreateTask }) {
                 key={id}
                 onClick={() => handleChangeColumn(id)}
                 current={currentColumn?.id === id}
+                color={colors[i]}
               >
                 {name}
                 {' '}
@@ -167,7 +169,11 @@ const ColumnTitle = styled.h3`
   &::before {
     content: '';
     display: inline-block;
-    background: red;
+    background: ${({ color, theme }) => {
+    if (color) return color;
+    if (theme.name === 'light') return '#000';
+    return '#fff';
+  }};
     width: 15px;
     height: 15px;
     border-radius: 50%;

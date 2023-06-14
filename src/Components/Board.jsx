@@ -9,6 +9,7 @@ import { updateTaskForColumn } from '../store/board/tasksActions';
 import useResponse from '../Hooks/useResponse';
 import Loading from './Interactive/Loading';
 import { boardData } from '../store/board/boardsActions';
+import colors from './helper/colors';
 
 function Board({ showModalEditBoard }) {
   const { board } = useSelector((state) => state.boards);
@@ -152,20 +153,19 @@ function Board({ showModalEditBoard }) {
     setPosition(null);
   };
 
+  const handleMouseUp = () => {
+    if (position) {
+      adjustTaskInColumn();
+    }
+    clearBoardStates();
+  };
+
   const handleViewTaskModal = (taskId) => {
     if (wasMoved) {
       setWasMoved(false);
     } else {
       setModalViewTask(taskId);
     }
-  };
-
-  const handleMouseUp = (taskId) => {
-    if (position) {
-      adjustTaskInColumn();
-    }
-    handleViewTaskModal(taskId);
-    clearBoardStates();
   };
 
   const openEditBoard = () => {
@@ -225,7 +225,7 @@ function Board({ showModalEditBoard }) {
               isDragging={isDragging}
               current={columnCurrent}
             >
-              <ColumnTitle>
+              <ColumnTitle color={colors[index]}>
                 {name}
                 {`(${tasksColumn.length})`}
               </ColumnTitle>
@@ -239,6 +239,7 @@ function Board({ showModalEditBoard }) {
                   onMouseUp={() => handleMouseUp(taskId)}
                   onTouchStart={() => handleMouseDown(idColumn, taskId)}
                   onTouchEnd={() => handleMouseUp(taskId)}
+                  onClick={() => handleViewTaskModal(taskId)}
                   position={position}
                   drop={dropTask}
                   id={taskId}
@@ -352,18 +353,27 @@ const ColumnTitle = styled.h3`
   display: flex;
   align-items: center;
   gap: 10px;
-  //position: fixed;
   &::before {
     content: '';
     display: inline-block;
-    background: red;
+    background: ${({ color, theme }) => {
+    if (color) return color;
+    if (theme.name === 'light') return '#000';
+    return '#fff';
+  }};
     width: 15px;
     height: 15px;
     border-radius: 50%;
   }
 `;
 
-const Task = styled.div`
+const Task = styled.div.attrs(({ drop, id, position }) => ({
+  style: {
+    left: `${position && position.x}px`,
+    top: `${position && position.y}px`,
+    position: (drop === id && position) ? 'absolute' : 'initial',
+  },
+}))`
   background: ${({ theme }) => theme.bgPrimary};
   color: ${({ theme }) => theme.textPrimary};
   box-shadow: ${({ theme }) => theme.shadowSecundary};
@@ -372,10 +382,7 @@ const Task = styled.div`
   font-size: 16px;
   font-weight: 700;
   cursor: move;
-  position: ${({ drop, id, position }) => ((drop === id && position) ? 'absolute' : 'initial')};
   width: 268px;
-  left: ${({ position }) => position && position.x}px;
-  top: ${({ position }) => position && position.y}px;
   user-select: none;
 `;
 

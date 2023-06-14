@@ -35,7 +35,6 @@ function Register() {
           }),
         );
       }
-      console.log(response);
     }
   };
 
