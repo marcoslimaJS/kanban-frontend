@@ -3,7 +3,6 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
-// import { useNavigate } from 'react-router-dom';
 import { ReactComponent as BoardSVG } from '../../assets/icon-board.svg';
 import { ReactComponent as LightSVG } from '../../assets/icon-light-theme.svg';
 import { ReactComponent as DarkSVG } from '../../assets/icon-dark-theme.svg';
@@ -14,12 +13,13 @@ import { boardData } from '../../store/board/boardsActions';
 import CreateBoard from '../Modals/CreateBoard';
 import useMedia from '../../Hooks/useMedia';
 import { AnimeDownBig } from '../../styles/animations';
+import reduceText from '../../helpers/reduceText';
 
 function AsideDesktop({ setTheme }) {
   const dispatch = useDispatch();
   const { sidebar, boards } = useSelector((state) => state);
   const [showModalCreateBoard, setShowModalCreateBoard] = useState(false);
-  const mobile = useMedia('(max-width: 640px)');
+  const mobile = useMedia('(max-width: 768px)');
 
   const handleSidebar = () => {
     dispatch(hideSidebar());
@@ -48,7 +48,7 @@ function AsideDesktop({ setTheme }) {
             onClick={() => handleBoardData(id)}
           >
             <BoardSVG />
-            {name}
+            {reduceText(name, 17)}
           </BoardItem>
         ))}
       </BoardList>
@@ -102,11 +102,6 @@ const Container = styled.aside`
   left: ${({ sidebar }) => (sidebar ? '0' : '-300px')};
   border-radius: ${({ mobile }) => (mobile ? '8px;' : 'none')};
   @media (max-width: 768px) {
-    width: ${({ sidebar }) => (sidebar ? '260px' : '0')};
-    left: ${({ sidebar }) => (sidebar ? '0' : '-260px')};
-    padding-right: ${({ sidebar }) => (sidebar ? '20px' : '0px')};
-  }
-  @media (max-width: 640px) {
     padding-bottom: 16px;
     position: relative;
     animation: ${AnimeDownBig} 0.5s ease-in-out;
@@ -182,7 +177,7 @@ const ThemeMode = styled.div`
   gap: 24px;
   margin-left: 24px;
   margin-bottom: 20px;
-  @media (max-width: 640px) {
+  @media (max-width: 768px) {
     margin-bottom: 0px;
   }
 `;

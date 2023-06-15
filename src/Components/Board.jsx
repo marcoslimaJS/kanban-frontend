@@ -9,12 +9,12 @@ import { updateTaskForColumn } from '../store/board/tasksActions';
 import useResponse from '../Hooks/useResponse';
 import Loading from './Interactive/Loading';
 import { boardData } from '../store/board/boardsActions';
-import colors from './helper/colors';
+import colors from '../helpers/colors';
 
 function Board({ showModalEditBoard }) {
   const { board } = useSelector((state) => state.boards);
   const { boards, sidebar, tasks } = useSelector((state) => state);
-  const mobile = useMedia('(max-width: 640px)');
+  const mobile = useMedia('(max-width: 768px)');
   const BoardElement = useRef(null);
   const columnsElement = useRef([]);
   const taskElement = useRef([]);

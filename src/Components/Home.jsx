@@ -20,7 +20,7 @@ function Home({ theme, setTheme }) {
     sidebar,
     boards: { board },
   } = useSelector((state) => state);
-  const mobile = useMedia('(max-width: 640px)');
+  const mobile = useMedia('(max-width: 768px)');
   const [showModalEditBoard, setShowModalEditBoard] = useState(false);
   const [showModalDeleteBoard, setShowModalDeleteBoard] = useState(false);
   const [showModalCreateTask, setShowModalCreateTask] = useState(false);
@@ -114,7 +114,7 @@ const Content = styled.div`
   grid-template-columns: auto 1fr;
   height: 100%;
   position: relative;
-  @media (max-width: 640px) {
+  @media (max-width: 768px) {
     display: block;
   }
 `;

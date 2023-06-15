@@ -7,12 +7,12 @@ import useMedia from '../Hooks/useMedia';
 import Button from './Interactive/Button';
 import Loading from './Interactive/Loading';
 import { boardData } from '../store/board/boardsActions';
-import colors from './helper/colors';
+import colors from '../helpers/colors';
 
 function BoardLayoutMobile({ showModalEditBoard, setShowModalCreateTask }) {
   const { board } = useSelector((state) => state.boards);
   const { boards, sidebar, tasks } = useSelector((state) => state);
-  const mobile = useMedia('(max-width: 640px)');
+  const mobile = useMedia('(max-width: 768px)');
   const [currentColumn, setCurrentColumn] = useState(board?.columns[0]);
   const [modalViewTask, setModalViewTask] = useState(null);
   const isFirstRender = useRef(true);
@@ -70,11 +70,7 @@ function BoardLayoutMobile({ showModalEditBoard, setShowModalCreateTask }) {
                 current={currentColumn?.id === id}
                 color={colors[i]}
               >
-                {name}
-                {' '}
-                <span>
-                  {`(${board?.columns[i]?.tasks.length})`}
-                </span>
+                {name} <span>{`(${board?.columns[i]?.tasks.length})`}</span>
               </ColumnTitle>
             ))}
           </ColumnsList>
@@ -87,13 +83,8 @@ function BoardLayoutMobile({ showModalEditBoard, setShowModalCreateTask }) {
               >
                 {title}
                 <Subtask>
-                  {subtasks.filter(({ completed }) => completed).length}
-                  {' '}
-                  of
-                  {' '}
-                  {subtasks.length}
-                  {' '}
-                  subtasks
+                  {subtasks.filter(({ completed }) => completed).length} of{' '}
+                  {subtasks.length} subtasks
                 </Subtask>
               </Task>
             ))}
@@ -164,16 +155,17 @@ const ColumnTitle = styled.h3`
   border-radius: 6px;
   white-space: nowrap;
   color: ${({ current }) => (current ? '#fff' : '#000')};
-  background: ${({ theme, current }) => (current ? theme.colorPrimary : theme.colorSecundary)};
+  background: ${({ theme, current }) =>
+    current ? theme.colorPrimary : theme.colorSecundary};
   cursor: pointer;
   &::before {
     content: '';
     display: inline-block;
     background: ${({ color, theme }) => {
-    if (color) return color;
-    if (theme.name === 'light') return '#000';
-    return '#fff';
-  }};
+      if (color) return color;
+      if (theme.name === 'light') return '#000';
+      return '#fff';
+    }};
     width: 15px;
     height: 15px;
     border-radius: 50%;

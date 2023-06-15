@@ -14,6 +14,7 @@ import useMedia from '../../Hooks/useMedia';
 import { showSidebar } from '../../store/sidebar';
 import { updateBoardLayout } from '../../store/auth/authActions';
 import { AnimeDown } from '../../styles/animations';
+import reduceText from '../../helpers/reduceText';
 
 function Header({ theme, openBoardEdit, openBoardDelete, openCreateTask }) {
   const {
@@ -22,7 +23,7 @@ function Header({ theme, openBoardEdit, openBoardDelete, openCreateTask }) {
   } = useSelector((state) => state);
   const [showConfigModal, setShowConfigModal] = useState(false);
   const configRef = useRef(null);
-  const mobile = useMedia('(max-width: 640px)');
+  const mobile = useMedia('(max-width: 768px)');
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const simpleLayout = localStorage.getItem('simpleLayout');
@@ -47,6 +48,16 @@ function Header({ theme, openBoardEdit, openBoardDelete, openCreateTask }) {
 
   const handleSidebar = () => {
     dispatch(showSidebar());
+  };
+
+  const adjustReduceText = () => {
+    if (!mobile) {
+      const media920 = useMedia('(max-width: 920px)');
+      return media920 ? 18 : 25;
+    }
+
+    const media920 = useMedia('(max-width: 500px)');
+    return media920 ? 13 : 25;
   };
 
   const changeLayout = async () => {
@@ -85,11 +96,15 @@ function Header({ theme, openBoardEdit, openBoardDelete, openCreateTask }) {
       </Logo>
       <HeaderContent>
         <TitleBoard onClick={mobile ? handleSidebar : undefined}>
-          {board?.name}
+          {reduceText(board?.name, adjustReduceText())}
           {mobile && <ArrowIcon />}
         </TitleBoard>
         <ButtonsContainer>
-          <Button fnClick={openModalCreateTask} mobile={mobile} close={!board?.columns.length}>
+          <Button
+            fnClick={openModalCreateTask}
+            mobile={mobile}
+            close={!board?.columns.length}
+          >
             + Add New Task
           </Button>
           <ConfigContainer ref={configRef}>
@@ -104,7 +119,9 @@ function Header({ theme, openBoardEdit, openBoardDelete, openCreateTask }) {
                 </DeleteButton>
                 {mobile && (
                   <ChangeLayout onClick={changeLayout}>
-                    {simpleLayout === 'true' ? 'Default Layout' : 'Simple Layout' }
+                    {simpleLayout === 'true'
+                      ? 'Default Layout'
+                      : 'Simple Layout'}
                   </ChangeLayout>
                 )}
                 <Logout onClick={logout}>
@@ -157,9 +174,6 @@ const Logo = styled.div`
   height: 100%;
   transition: all 700ms ease 0s;
   @media (max-width: 768px) {
-    width: 260px;
-  }
-  @media (max-width: 640px) {
     border-right: none;
     width: 100%;
     padding: 20px 16px;
@@ -171,7 +185,7 @@ const HeaderContent = styled.div`
   align-items: center;
   gap: 24px;
   padding: 24px;
-  @media (max-width: 640px) {
+  @media (max-width: 768px) {
     padding: 20px 16px 20px 0px;
   }
 `;
@@ -186,11 +200,14 @@ const TitleBoard = styled.h1`
     position: relative;
     top: 3px;
   }
-  @media (max-width: 768px) {
-    font-size: 20px;
+  @media (max-width: 860px) {
+    font-size: 19px;
   }
-  @media (max-width: 640px) {
+  @media (max-width: 768px) {
     cursor: pointer;
+  }
+  @media (max-width: 374px) {
+    font-size: 15px;
   }
 `;
 
