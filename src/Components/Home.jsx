@@ -13,6 +13,7 @@ import CreateBoard from './Modals/CreateBoard';
 import DeleteModal from './Modals/DeleteModal';
 import CreateTask from './Modals/CreateTask';
 import BoardLayoutMobile from './BoardLayoutMobile';
+import LayoutNotification from './Modals/LayoutNotification';
 
 function Home({ theme, setTheme }) {
   const dispatch = useDispatch();
@@ -25,6 +26,7 @@ function Home({ theme, setTheme }) {
   const [showModalEditBoard, setShowModalEditBoard] = useState(false);
   const [showModalDeleteBoard, setShowModalDeleteBoard] = useState(false);
   const [showModalCreateTask, setShowModalCreateTask] = useState(false);
+  const [showModalLayout, setShowModalLayout] = useState(false);
   const dataBoard = {
     name: board?.name,
     userId: localStorage.getItem('userId'),
@@ -40,7 +42,9 @@ function Home({ theme, setTheme }) {
   };
 
   useEffect(() => {
-    // console.log('Open modal notification');
+    if (user?.new_layout_notification) {
+      // setShowModalLayout(true);
+    }
   }, []);
 
   return (
@@ -87,6 +91,9 @@ function Home({ theme, setTheme }) {
         )}
         {showModalCreateTask && (
           <CreateTask closeModal={setShowModalCreateTask} />
+        )}
+        {showModalLayout && (
+          <LayoutNotification closeModal={setShowModalLayout} />
         )}
       </Content>
     </Container>

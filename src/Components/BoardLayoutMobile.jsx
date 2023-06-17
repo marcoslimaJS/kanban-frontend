@@ -184,8 +184,8 @@ const ColumnTitle = styled.h3`
 
 const Task = styled.div`
   background: ${({ theme }) => theme.bgPrimary};
-  background: #b8b8ce;
-  box-shadow: 0px 4px 6px rgba(54, 78, 126, 0.101545);
+  color: ${({ theme }) => theme.textPrimary};
+  box-shadow: ${({ theme }) => theme.shadowSecundary};
   padding: 22px 16px;
   border-radius: 8px;
   font-size: 16px;

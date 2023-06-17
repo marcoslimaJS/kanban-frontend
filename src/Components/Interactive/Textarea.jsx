@@ -15,6 +15,7 @@ function Textarea({ label, placeHolder, type, id, error, defaultValue, onChange,
         onChange={onChange}
         onBlur={onBlur}
         defaultValue={defaultValue}
+        error={error}
       />
       <Error>{error}</Error>
     </Container>
@@ -58,12 +59,12 @@ const TextareaStyle = styled.textarea`
   resize: none;
   overflow-y: hidden;
   height: 112px;
-  border: 1px solid ${({ theme }) => theme.stroke};
+  border: 1px solid ${({ theme, error }) => (!error ? theme.stroke : theme.delete)};
   background:  ${({ theme }) => theme.bgPrimary};
   color: ${({ theme }) => theme.textPrimary};
   font-family: 'Plus Jakarta Sans';
   &:focus {
-    border-color: ${({ theme }) => theme.colorPrimary};
+    border-color: ${({ theme, error }) => (!error ? theme.colorPrimary : theme.delete)};
   }
   &::placeholder {
     color: ${({ theme }) => theme.textPrimary};
@@ -82,8 +83,10 @@ const Label = styled.label`
 
 const Error = styled.span`
   color: ${({ theme }) => theme.delete};
-  position: absolute;
-  right: 16px;
-  bottom: 54px;
+  margin-left: 10px;
+  margin-top: 5px;
   font-size: 14px;
+  @media (max-width: 500px) {
+    font-size: 12px;
+  }
 `;
