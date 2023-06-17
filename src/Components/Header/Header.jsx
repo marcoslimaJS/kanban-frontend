@@ -12,12 +12,13 @@ import { ReactComponent as LogoutIcon } from '../../assets/logout.svg';
 import Button from '../Interactive/Button';
 import useMedia from '../../Hooks/useMedia';
 import { showSidebar } from '../../store/sidebar';
-import { updateBoardLayout } from '../../store/auth/authActions';
+import { updateUserData } from '../../store/auth/authActions';
 import { AnimeDown } from '../../styles/animations';
 import reduceText from '../../helpers/reduceText';
 
 function Header({ theme, openBoardEdit, openBoardDelete, openCreateTask }) {
   const {
+    auth: { user },
     boards: { board },
     sidebar,
   } = useSelector((state) => state);
@@ -26,9 +27,10 @@ function Header({ theme, openBoardEdit, openBoardDelete, openCreateTask }) {
   const mobile = useMedia('(max-width: 768px)');
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const simpleLayout = localStorage.getItem('simpleLayout');
   const userId = localStorage.getItem('userId');
   const currentLogo = theme === 'light' ? <LogoDark /> : <LogoLight />;
+  const media920 = useMedia('(max-width: 920px)');
+  const media500 = useMedia('(max-width: 500px)');
 
   const openModalCreateTask = () => {
     openCreateTask(true);
@@ -51,27 +53,21 @@ function Header({ theme, openBoardEdit, openBoardDelete, openCreateTask }) {
   };
 
   const adjustReduceText = () => {
-    if (!mobile) {
-      const media920 = useMedia('(max-width: 920px)');
-      return media920 ? 18 : 25;
-    }
-
-    const media920 = useMedia('(max-width: 500px)');
-    return media920 ? 13 : 25;
+    if (!mobile) return media920 ? 18 : 25;
+    return media500 ? 13 : 25;
   };
 
   const changeLayout = async () => {
     const body = {
-      simpleLayout: simpleLayout !== 'true',
+      simpleLayout: !user?.simple_layout,
+      showNotification: user?.new_layout_notification || false,
     };
-    const response = await dispatch(updateBoardLayout({ userId, body }));
-    console.log(response);
+    await dispatch(updateUserData({ userId, body }));
   };
 
   const logout = () => {
     localStorage.removeItem('userId');
     localStorage.removeItem('token');
-    localStorage.removeItem('simpleLayout');
     navigate('/login');
   };
 
@@ -96,7 +92,9 @@ function Header({ theme, openBoardEdit, openBoardDelete, openCreateTask }) {
       </Logo>
       <HeaderContent>
         <TitleBoard onClick={mobile ? handleSidebar : undefined}>
-          {reduceText(board?.name, adjustReduceText())}
+          {board?.name
+            ? reduceText(board?.name, adjustReduceText())
+            : 'Create a Board'}
           {mobile && <ArrowIcon />}
         </TitleBoard>
         <ButtonsContainer>
@@ -119,9 +117,7 @@ function Header({ theme, openBoardEdit, openBoardDelete, openCreateTask }) {
                 </DeleteButton>
                 {mobile && (
                   <ChangeLayout onClick={changeLayout}>
-                    {simpleLayout === 'true'
-                      ? 'Default Layout'
-                      : 'Simple Layout'}
+                    {user?.simple_layout ? 'Default Layout' : 'Simple Layout'}
                   </ChangeLayout>
                 )}
                 <Logout onClick={logout}>

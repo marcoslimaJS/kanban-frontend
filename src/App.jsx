@@ -10,16 +10,15 @@ import Home from './Components/Home';
 import { getAllBoards } from './store/board/boardsActions';
 import Register from './Components/Register';
 import Loading from './Components/Interactive/Loading';
-import { clearErrorAuth } from './store/auth/auth';
+import { getUserData } from './store/auth/authActions';
 
 function App() {
   const [theme, setTheme] = useState(light);
-  const { listBoards } = useSelector((state) => state.boards);
+  const { user } = useSelector((state) => state.auth);
   const { refresh } = useSelector((state) => state.boards);
   const [loadingAutoLogin, setLoadingAutoLogin] = useState(false);
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const location = useLocation();
 
   const token = localStorage.getItem('token');
   const userId = localStorage.getItem('userId');
@@ -29,6 +28,7 @@ function App() {
     const autoLogin = async () => {
       setLoadingAutoLogin(true);
       await dispatch(getAllBoards(userId));
+      dispatch(getUserData(userId));
       setLoadingAutoLogin(false);
     };
     if (token && userId) {
@@ -36,15 +36,12 @@ function App() {
     }
   }, [refresh]);
 
+  // Redirecionar para a Home caso esteja logado
   useEffect(() => {
-    if (listBoards) {
+    if (user) {
       navigate('/');
     }
-  }, [listBoards]);
-
-  useEffect(() => {
-    dispatch(clearErrorAuth());
-  }, [location]);
+  }, [user]);
 
   return (
     <ThemeProvider theme={theme}>

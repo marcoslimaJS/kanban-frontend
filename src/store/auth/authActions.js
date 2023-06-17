@@ -25,8 +25,20 @@ export const loginUser = createAsyncThunk(
   },
 );
 
-export const updateBoardLayout = createAsyncThunk(
-  'user/updateBoardLayout',
+export const getUserData = createAsyncThunk(
+  'user/getUserData',
+  async (userId, { rejectWithValue }) => {
+    try {
+      const response = await api.get(`/user/${userId}`);
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(error.response.data);
+    }
+  },
+);
+
+export const updateUserData = createAsyncThunk(
+  'user/updateUserData',
   async ({ userId, body }, { rejectWithValue }) => {
     try {
       const response = await api.put(`/user/${userId}`, body);

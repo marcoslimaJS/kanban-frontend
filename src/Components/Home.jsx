@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
@@ -17,6 +17,7 @@ import BoardLayoutMobile from './BoardLayoutMobile';
 function Home({ theme, setTheme }) {
   const dispatch = useDispatch();
   const {
+    auth: { user },
     sidebar,
     boards: { board },
   } = useSelector((state) => state);
@@ -29,7 +30,6 @@ function Home({ theme, setTheme }) {
     userId: localStorage.getItem('userId'),
     type: 'board',
   };
-  const simpleLayout = localStorage.getItem('simpleLayout');
 
   const handleSidebar = () => {
     dispatch(showSidebar());
@@ -38,6 +38,10 @@ function Home({ theme, setTheme }) {
   const hiddenSidebar = () => {
     dispatch(hideSidebar());
   };
+
+  useEffect(() => {
+    // console.log('Open modal notification');
+  }, []);
 
   return (
     <Container>
@@ -58,7 +62,7 @@ function Home({ theme, setTheme }) {
             )}
           </>
         )}
-        {simpleLayout === 'true' && mobile ? (
+        {user?.simple_layout && mobile ? (
           <BoardLayoutMobile
             showModalEditBoard={setShowModalEditBoard}
             setShowModalCreateTask={setShowModalCreateTask}

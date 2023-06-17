@@ -102,6 +102,7 @@ const DropdownOptions = styled.ul`
   box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
   animation: ${AnimeDown} 0.5s ease-in-out;
   margin-bottom: 10px;
+  word-break: break-all;
 `;
 
 const DropdownOption = styled.li`

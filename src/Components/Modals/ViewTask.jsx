@@ -150,6 +150,7 @@ const Title = styled.h1`
   font-weight: 700;
   font-size: 20px;
   line-height: 23px;
+  word-break: break-all;
 `;
 
 const ConfigButton = styled.button`
@@ -172,11 +173,6 @@ const ConfigModal = styled.div`
   background: ${({ theme }) => theme.bgPrimary};
   width: 192px;
   animation: ${AnimeDown} 0.4s ease-in-out;
-
-  @media (max-width: 700px) {
-    left: -166px;
-    top: 30px;
-  }
 `;
 
 const EditButton = styled.div`
@@ -201,6 +197,7 @@ const Description = styled.div`
   color: ${({ theme }) => theme.textSecundary};
   line-height: 23px;
   font-size: 16px;
+  word-break: break-all;
 `;
 
 const Subtasks = styled.div`
@@ -226,6 +223,7 @@ const Subtask = styled.div`
   p {
     text-decoration: ${({ completed }) => (completed ? 'line-through' : 'none')};
     opacity: ${({ completed }) => (completed ? 0.5 : 1)};
+    word-break: break-all;
   }
 `;
 

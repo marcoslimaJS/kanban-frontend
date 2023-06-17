@@ -1,7 +1,13 @@
 /* eslint-disable no-unused-expressions */
 /* eslint-disable no-param-reassign */
 import { createSlice } from '@reduxjs/toolkit';
-import { getAllBoards, createBoard, boardData, deleteBoard, updateBoard } from './boardsActions';
+import {
+  getAllBoards,
+  createBoard,
+  getBoardData,
+  deleteBoard,
+  updateBoard,
+} from './boardsActions';
 
 const boardSlice = createSlice({
   name: 'board',
@@ -28,14 +34,14 @@ const boardSlice = createSlice({
         state.error = action.error?.message;
       })
 
-      .addCase(boardData.pending, (state) => {
+      .addCase(getBoardData.pending, (state) => {
         state.loading = true;
       })
-      .addCase(boardData.fulfilled, (state, action) => {
+      .addCase(getBoardData.fulfilled, (state, action) => {
         state.loading = false;
         state.board = action.payload;
       })
-      .addCase(boardData.rejected, (state, action) => {
+      .addCase(getBoardData.rejected, (state, action) => {
         state.loading = false;
         state.error = action.error?.message;
       })
@@ -72,7 +78,9 @@ const boardSlice = createSlice({
         state.refresh += 1;
         state.board = null;
         state.deleted += 1;
-        state.listBoards = state.listBoards.filter(({ id }) => id !== action.payload);
+        state.listBoards = state.listBoards.filter(
+          ({ id }) => id !== action.payload
+        );
       })
       .addCase(deleteBoard.rejected, (state, action) => {
         state.loading = false;

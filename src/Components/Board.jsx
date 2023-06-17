@@ -8,7 +8,7 @@ import Button from './Interactive/Button';
 import { updateTaskForColumn } from '../store/board/tasksActions';
 import useResponse from '../Hooks/useResponse';
 import Loading from './Interactive/Loading';
-import { boardData } from '../store/board/boardsActions';
+import { getBoardData } from '../store/board/boardsActions';
 import colors from '../helpers/colors';
 
 function Board({ showModalEditBoard }) {
@@ -184,7 +184,7 @@ function Board({ showModalEditBoard }) {
   useEffect(() => {
     const firstId = boards.listBoards[0]?.id;
     if (firstId) {
-      dispatch(boardData(firstId));
+      dispatch(getBoardData(firstId));
     }
   }, [boards.deleted]);
 
@@ -195,7 +195,7 @@ function Board({ showModalEditBoard }) {
       return;
     }
     const refreshBoard = async () => {
-      dispatch(boardData(board?.id));
+      dispatch(getBoardData(board?.id));
     };
     refreshBoard();
   }, [tasks.refresh, boards.refresh]);
@@ -353,6 +353,7 @@ const ColumnTitle = styled.h3`
   display: flex;
   align-items: center;
   gap: 10px;
+  word-break: break-all;
   &::before {
     content: '';
     display: inline-block;
@@ -384,6 +385,7 @@ const Task = styled.div.attrs(({ drop, id, position }) => ({
   cursor: move;
   width: 268px;
   user-select: none;
+  word-break: break-all;
 `;
 
 const Subtask = styled.p`

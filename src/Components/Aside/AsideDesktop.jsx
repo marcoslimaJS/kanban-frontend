@@ -9,7 +9,7 @@ import { ReactComponent as DarkSVG } from '../../assets/icon-dark-theme.svg';
 import { ReactComponent as HideSVG } from '../../assets/icon-hide-sidebar.svg';
 import SwitchButton from '../Interactive/SwitchButton';
 import { hideSidebar } from '../../store/sidebar';
-import { boardData } from '../../store/board/boardsActions';
+import { getBoardData } from '../../store/board/boardsActions';
 import CreateBoard from '../Modals/CreateBoard';
 import useMedia from '../../Hooks/useMedia';
 import { AnimeDownBig } from '../../styles/animations';
@@ -26,7 +26,7 @@ function AsideDesktop({ setTheme }) {
   };
 
   const handleBoardData = (id) => {
-    dispatch(boardData(id));
+    dispatch(getBoardData(id));
   };
 
   const createBoard = () => {
@@ -39,9 +39,9 @@ function AsideDesktop({ setTheme }) {
       mobile={mobile}
       onClick={(e) => e.stopPropagation()}
     >
-      <AllBoards>All Boards ({boards.listBoards.length})</AllBoards>
+      <AllBoards>All Boards ({boards.listBoards?.length})</AllBoards>
       <BoardList>
-        {boards.listBoards.map(({ name, id }) => (
+        {boards.listBoards?.map(({ name, id }) => (
           <BoardItem
             key={id}
             current={boards.board?.id === id}

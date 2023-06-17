@@ -49,8 +49,8 @@ export const deleteBoard = createAsyncThunk(
   },
 );
 
-export const boardData = createAsyncThunk(
-  'board/boardData',
+export const getBoardData = createAsyncThunk(
+  'board/getBoardData',
   async (boardId, { rejectWithValue }) => {
     try {
       const response = await api.get(`/boardData/${boardId}`);

@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
 import Modal from './Modal';
 import Button from '../Interactive/Button';
-import { boardData, deleteBoard } from '../../store/board/boardsActions';
+import { getBoardData, deleteBoard } from '../../store/board/boardsActions';
 import { deleteTask } from '../../store/board/tasksActions';
 import useResponse from '../../Hooks/useResponse';
 
@@ -36,7 +36,7 @@ function DeleteModal({ id, closeModal, data, closeViewModal }) {
       });
       if (response.meta.requestStatus === 'fulfilled') {
         const firstId = boards.listBoards[0]?.id;
-        dispatch(boardData(firstId));
+        dispatch(getBoardData(firstId));
       }
     }
     if (data.type === 'task') {

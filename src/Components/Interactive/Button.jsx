@@ -25,7 +25,7 @@ function Button({
       close={close}
       load={loading}
     >
-      {!mobile ? children : <AddIcon />}
+      {!mobile ? <span>{children}</span> : <AddIcon />}
       {loading && <Loading />}
     </ButtonStyled>
   );

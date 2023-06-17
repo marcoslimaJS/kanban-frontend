@@ -2,18 +2,19 @@ import React, { useEffect } from 'react';
 import styled from 'styled-components';
 import { useDispatch, useSelector } from 'react-redux';
 // import { Navigate } from 'react-router-dom';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { ReactComponent as Logo } from '../assets/logo-dark.svg';
 import { ReactComponent as ImgSVG } from '../assets/scrum-board.svg';
 import Button from './Interactive/Button';
 import Input from './Interactive/Input';
 import useForm from '../Hooks/useForm';
 import { loginUser } from '../store/auth/authActions';
-import { getAllBoards } from '../store/board/boardsActions';
+import { clearErrorAuth } from '../store/auth/auth';
 
 function Login() {
-  const { user, error, loading } = useSelector((state) => state.auth);
+  const { error, loading } = useSelector((state) => state.auth);
   const navigate = useNavigate();
+  const location = useLocation();
 
   const dispatch = useDispatch();
   const username = useForm();
@@ -35,10 +36,8 @@ function Login() {
   };
 
   useEffect(() => {
-    if (user?.userId) {
-      dispatch(getAllBoards(user.userId));
-    }
-  }, [user?.userId]);
+    dispatch(clearErrorAuth());
+  }, [location]);
 
   return (
     <Container>

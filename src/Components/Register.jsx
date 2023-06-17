@@ -1,7 +1,6 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import styled from 'styled-components';
 import { useDispatch, useSelector } from 'react-redux';
-// import { Navigate } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
 import { ReactComponent as Logo } from '../assets/logo-dark.svg';
 import { ReactComponent as ImgSVG } from '../assets/scrum-board.svg';
@@ -9,10 +8,9 @@ import Button from './Interactive/Button';
 import Input from './Interactive/Input';
 import useForm from '../Hooks/useForm';
 import { createUser, loginUser } from '../store/auth/authActions';
-import { getAllBoards } from '../store/board/boardsActions';
 
 function Register() {
-  const { user, error, loading } = useSelector((state) => state.auth);
+  const { error, loading } = useSelector((state) => state.auth);
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -41,12 +39,6 @@ function Register() {
   const backToLogin = () => {
     navigate('/login');
   };
-
-  useEffect(() => {
-    if (user?.userId) {
-      dispatch(getAllBoards(user.userId));
-    }
-  }, [user?.userId]);
 
   return (
     <Container>
