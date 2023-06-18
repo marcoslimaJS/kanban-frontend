@@ -168,7 +168,6 @@ const FormLogin = styled.form`
   button {
     width: 100%;
     margin-top: 20px;
-    margin-bottom: 30px;
     border-radius: 4px;
     font-size: 18px;
   }
@@ -188,6 +187,7 @@ const Error = styled.p`
 const SignUp = styled.p`
   text-align: center;
   font-size: 18px;
+  margin-top: 20px;
   span {
     color: ${({ theme }) => theme.white};
     cursor: pointer;

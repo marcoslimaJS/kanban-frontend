@@ -4,14 +4,16 @@ import PropTypes from 'prop-types';
 import { ReactComponent as CloseIcon } from '../../assets/close.svg';
 import { AnimeScale } from '../../styles/animations';
 
-function Modal({ onClose, children }) {
+function Modal({ onClose, children, noIcon }) {
   return (
     <ModalOverlay onClick={onClose}>
-      <ModalWrapper>
-        <ModalContent onClick={(e) => e.stopPropagation()}>
-          <CloseModalIcon>
-            <CloseIcon onClick={onClose} />
-          </CloseModalIcon>
+      <ModalWrapper noIcon={noIcon}>
+        <ModalContent onClick={(e) => e.stopPropagation()} noPadding={noIcon}>
+          {!noIcon && (
+            <CloseModalIcon>
+              <CloseIcon onClick={onClose} />
+            </CloseModalIcon>
+          )}
           {children}
         </ModalContent>
       </ModalWrapper>
@@ -22,10 +24,12 @@ function Modal({ onClose, children }) {
 Modal.propTypes = {
   children: PropTypes.node.isRequired,
   onClose: PropTypes.func,
+  noIcon: PropTypes.bool,
 };
 
 Modal.defaultProps = {
   onClose: () => {},
+  noIcon: false,
 };
 
 export default Modal;
@@ -48,7 +52,8 @@ const ModalWrapper = styled.div`
   background: ${({ theme }) => theme.bgPrimary};
   color: ${({ theme }) => theme.textPrimary};
   border-radius: 6px;
-  padding: 48px 32px 32px 24px;
+  padding: 24px 32px 32px 24px;
+  padding-top: ${({ noIcon }) => (!noIcon ? '48px' : '24px')};
   max-width: 480px;
   width: 100%;
   font-size: 13px;
@@ -58,6 +63,7 @@ const ModalWrapper = styled.div`
 
 const ModalContent = styled.div`
   padding: 0px 24px;
+  padding: ${({ noPadding }) => (!noPadding ? '0px 24px' : '0px')};
   max-height: calc(100vh - 120px);
   overflow-y: auto;
   &::-webkit-scrollbar {

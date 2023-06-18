@@ -13,7 +13,7 @@ const boardSlice = createSlice({
   name: 'board',
   initialState: {
     board: null,
-    listBoards: null,
+    listBoards: [],
     refresh: 0,
     loading: false,
     error: null,
@@ -79,7 +79,7 @@ const boardSlice = createSlice({
         state.board = null;
         state.deleted += 1;
         state.listBoards = state.listBoards.filter(
-          ({ id }) => id !== action.payload
+          ({ id }) => id !== action.payload,
         );
       })
       .addCase(deleteBoard.rejected, (state, action) => {

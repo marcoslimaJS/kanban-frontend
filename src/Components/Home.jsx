@@ -43,7 +43,7 @@ function Home({ theme, setTheme }) {
 
   useEffect(() => {
     if (user?.new_layout_notification) {
-      // setShowModalLayout(true);
+      setShowModalLayout(true);
     }
   }, []);
 

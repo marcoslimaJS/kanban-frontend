@@ -1,22 +1,51 @@
-import React from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
-import { AnimeScale } from '../../styles/animations';
+import { useDispatch, useSelector } from 'react-redux';
+import { ReactComponent as CheckIcon } from '../../assets/icon-check.svg';
+import Modal from './Modal';
+import Button from '../Interactive/Button';
+import { updateUserData } from '../../store/auth/authActions';
 
 function LayoutNotification({ closeModal }) {
+  const { auth } = useSelector((state) => state);
+  const dispatch = useDispatch();
+  const [dontShowAgain, setDontShowAgain] = useState(false);
+  const userId = localStorage.getItem('userId');
+
+  const changeLayout = async () => {
+    if (dontShowAgain) {
+      const body = {
+        simpleLayout: auth.user?.simple_layout,
+        showNotification: !dontShowAgain,
+      };
+      await dispatch(updateUserData({ userId, body }));
+    }
+    closeModal(false);
+  };
+
   return (
-    <ModalOverlay>
-      <ModalWrapper>
-        <ImagesContainer>
-          <ImageDefault>
-            <img src="/default-layout.png" alt="" />
-          </ImageDefault>
-          <ImageDefault>
-            <img src="/default-layout.png" alt="" />
-          </ImageDefault>
-        </ImagesContainer>
-      </ModalWrapper>
-    </ModalOverlay>
+    <Modal noIcon>
+      <Container>
+        <Title>
+          Seja bem vindo
+          <span>{auth.user?.username}</span>
+        </Title>
+        <Content>
+          Aviso! Para usuários com telas menores, temos a opção adicional de layout
+          simplificado (clicando nos três pontos), que não possui a funcionalidade
+          de arrastar tarefas entre colunas.
+        </Content>
+        <DontAgain onClick={() => setDontShowAgain(!dontShowAgain)}>
+          <Checkbox completed={dontShowAgain}>
+            {dontShowAgain && <CheckIcon />}
+          </Checkbox>
+          Don&apos;t show again
+        </DontAgain>
+        <Developer>Marcos Paulo Lima</Developer>
+        <Button fnClick={changeLayout} loading={auth.loading}>Close</Button>
+      </Container>
+    </Modal>
   );
 }
 
@@ -30,43 +59,52 @@ LayoutNotification.defaultProps = {
 
 export default LayoutNotification;
 
-const ModalOverlay = styled.div`
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: rgba(0, 0, 0, 0.5);
+const Container = styled.div`
   display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 9000;
-  padding: 32px 24px;
-`;
-
-const ModalWrapper = styled.div`
-  background: ${({ theme }) => theme.bgPrimary};
-  color: ${({ theme }) => theme.textPrimary};
-  border-radius: 6px;
-  padding: 48px 32px 32px 24px;
-  width: 100%;
-  max-width: 800px;
-  font-size: 13px;
-  animation: ${AnimeScale} 0.5s ease-in-out;
-  position: relative;
-`;
-
-const ImagesContainer = styled.div`
-  display: flex;
+  flex-direction: column;
   gap: 20px;
 `;
 
-const ImageDefault = styled.div`
-  padding: 15px 0px;
-  box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
-  img {
-    max-height: 300px;
+const Title = styled.p`
+  font-size: 22px;
+  word-break: break-all;
+  text-align: center;
+  span {
+    font-weight: 600;
+    margin-left: 12px;
   }
 `;
 
-const ImageSimple = styled.div``;
+const Content = styled.div`
+  font-size: 16px;
+`;
+
+const Developer = styled.h3`
+  font-weight: 600;
+  text-align: end;
+  font-style: italic;
+`;
+
+const DontAgain = styled.div`
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  align-self: start;
+  font-size: 16px;
+  cursor: pointer;
+`;
+
+const Checkbox = styled.div`
+  height: 22px;
+  width: 22px;
+  border: 1px solid ${({ theme }) => theme.stroke};
+  border-radius: 2px;
+  background: ${({ theme, completed }) => (completed ? theme.colorPrimary : theme.bgPrimary)};
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  svg {
+    position: relative;
+    top: 1px;
+  }
+`;

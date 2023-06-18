@@ -68,11 +68,31 @@ function Board({ showModalEditBoard }) {
     }
   };
 
+  const moveScrollToVertical = (e) => {
+    const screenHeight = window.innerHeight;
+    const scrollThreshold = 170;
+
+    if (e.clientY < scrollThreshold) {
+      // scroll para cima
+      BoardElement.current.scrollBy({
+        top: -100,
+        behavior: 'smooth',
+      });
+    } else if (e.clientY > screenHeight - scrollThreshold) {
+      // scroll para baixo
+      BoardElement.current.scrollBy({
+        top: 100,
+        behavior: 'smooth',
+      });
+    }
+  };
+
   const handleMouseMoveInBoard = (event) => {
     const e = event.type === 'touchmove' ? event.touches[0] : event;
     setWasMoved(true);
 
     moveScrollToHorizontal(e);
+    moveScrollToVertical(e);
     const scroll = BoardElement.current.scrollLeft;
     const scrollTo = BoardElement.current.scrollTop;
 

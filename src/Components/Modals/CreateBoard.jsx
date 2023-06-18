@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
@@ -42,15 +42,17 @@ function CreateBoard({ boardId, closeModal }) {
       name: name.value,
       columns,
     };
-    const response = await dispatch(
-      createBoard({ userId: localStorage.getItem('userId'), body }),
-    );
-    useResponse({
-      status: response.meta.requestStatus,
-      type: 'board',
-      result: 'created',
-    });
-    closeModalCreateBoard();
+    if (name.validate()) {
+      const response = await dispatch(
+        createBoard({ userId: localStorage.getItem('userId'), body }),
+      );
+      useResponse({
+        status: response.meta.requestStatus,
+        type: 'board',
+        result: 'created',
+      });
+      closeModalCreateBoard();
+    }
   };
 
   const handleUpdateBoard = async (e) => {
@@ -59,13 +61,15 @@ function CreateBoard({ boardId, closeModal }) {
       name: name.value,
       columns,
     };
-    const response = await dispatch(updateBoard({ boardId, body }));
-    useResponse({
-      status: response.meta.requestStatus,
-      type: 'board',
-      result: 'updated',
-    });
-    closeModalCreateBoard();
+    if (name.validate()) {
+      const response = await dispatch(updateBoard({ boardId, body }));
+      useResponse({
+        status: response.meta.requestStatus,
+        type: 'board',
+        result: 'updated',
+      });
+      closeModalCreateBoard();
+    }
   };
 
   return (

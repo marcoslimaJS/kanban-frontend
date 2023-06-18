@@ -19,10 +19,12 @@ function CreateTask({ taskId, closeModal }) {
   const { board } = useSelector((state) => state.boards);
   const { loading } = useSelector(({ tasks }) => tasks);
   const dispatch = useDispatch();
-  const options = board.columns.map(({ name, id }) => ({
-    label: name,
-    value: id,
-  })).reverse();
+  const options = board.columns
+    .map(({ name, id }) => ({
+      label: name,
+      value: id,
+    }))
+    .reverse();
   const [status, setStatus] = useState(options[options.length - 1]);
   const title = useForm(task?.title);
   const description = useForm(task?.description);
@@ -56,15 +58,19 @@ function CreateTask({ taskId, closeModal }) {
       description: description.value,
       subtasks,
     };
-    const response = await dispatch(
-      createTask({ columnId: status.value, body }),
-    );
-    useResponse({
-      status: response.meta.requestStatus,
-      type: 'task',
-      result: 'created',
-    });
-    closeModalCreateTask();
+    const titleValidate = title.validate();
+    const descriptionValidate = description.validate();
+    if (titleValidate && descriptionValidate) {
+      const response = await dispatch(
+        createTask({ columnId: status.value, body }),
+      );
+      useResponse({
+        status: response.meta.requestStatus,
+        type: 'task',
+        result: 'created',
+      });
+      closeModalCreateTask();
+    }
   };
 
   const handleUpdateTask = async (e) => {
@@ -75,13 +81,17 @@ function CreateTask({ taskId, closeModal }) {
       subtasks,
       columnId: status.value,
     };
-    const response = await dispatch(updateTask({ taskId, body }));
-    useResponse({
-      status: response.meta.requestStatus,
-      type: 'task',
-      result: 'updated',
-    });
-    closeModalCreateTask();
+    const titleValidate = title.validate();
+    const descriptionValidate = description.validate();
+    if (titleValidate && descriptionValidate) {
+      const response = await dispatch(updateTask({ taskId, body }));
+      useResponse({
+        status: response.meta.requestStatus,
+        type: 'task',
+        result: 'updated',
+      });
+      closeModalCreateTask();
+    }
   };
 
   return (

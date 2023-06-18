@@ -169,7 +169,6 @@ const FormLogin = styled.form`
   button {
     width: 100%;
     margin-top: 20px;
-    margin-bottom: 30px;
     border-radius: 4px;
     font-size: 18px;
   }
@@ -195,6 +194,7 @@ const Login = styled.div`
   align-items: center;
   gap: 8px;
   transition: 0.5s;
+  margin-top: 20px;
   span {
     width: 0px;
     border-top: 8px solid transparent;
