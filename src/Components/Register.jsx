@@ -9,6 +9,7 @@ import Input from './Interactive/Input';
 import useForm from '../Hooks/useForm';
 import { createUser, loginUser } from '../store/auth/authActions';
 import { clearErrorAuth } from '../store/auth/auth';
+import { getAllBoards } from '../store/board/boardsActions';
 
 function Register() {
   const { error, loading } = useSelector((state) => state.auth);
@@ -28,12 +29,15 @@ function Register() {
         createUser({ username: username.value, password: password.value }),
       );
       if (response.meta.requestStatus === 'fulfilled') {
-        dispatch(
+        const responseLogin = await dispatch(
           loginUser({
             username: response.payload.username,
             password: response.payload.password,
           }),
         );
+        if (responseLogin.meta.requestStatus === 'fulfilled') {
+          dispatch(getAllBoards(responseLogin.payload.userId));
+        }
       }
     }
   };
