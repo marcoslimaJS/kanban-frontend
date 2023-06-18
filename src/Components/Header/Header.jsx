@@ -15,6 +15,8 @@ import { showSidebar } from '../../store/sidebar';
 import { updateUserData } from '../../store/auth/authActions';
 import { AnimeDown } from '../../styles/animations';
 import reduceText from '../../helpers/reduceText';
+import { clearUserData } from '../../store/auth/auth';
+import { clearBoardData } from '../../store/board/boards';
 
 function Header({ theme, openBoardEdit, openBoardDelete, openCreateTask }) {
   const {
@@ -68,6 +70,8 @@ function Header({ theme, openBoardEdit, openBoardDelete, openCreateTask }) {
   const logout = () => {
     localStorage.removeItem('userId');
     localStorage.removeItem('token');
+    dispatch(clearUserData());
+    dispatch(clearBoardData());
     navigate('/login');
   };
 

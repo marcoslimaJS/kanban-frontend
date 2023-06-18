@@ -13,13 +13,22 @@ const boardSlice = createSlice({
   name: 'board',
   initialState: {
     board: null,
-    listBoards: [],
+    listBoards: null,
     refresh: 0,
     loading: false,
     error: null,
     deleted: 0,
   },
-  reducers: {},
+  reducers: {
+    clearBoardData: (state) => {
+      state.board = null;
+      state.listBoards = null;
+      state.refresh = 0;
+      state.loading = false;
+      state.error = null;
+      state.deleted = 0;
+    },
+  },
   extraReducers: (builder) => {
     builder
       .addCase(getAllBoards.pending, (state) => {
@@ -90,3 +99,5 @@ const boardSlice = createSlice({
 });
 
 export default boardSlice.reducer;
+
+export const { clearBoardData } = boardSlice.actions;

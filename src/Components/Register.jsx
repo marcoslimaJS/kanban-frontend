@@ -1,19 +1,21 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import styled from 'styled-components';
 import { useDispatch, useSelector } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { ReactComponent as Logo } from '../assets/logo-dark.svg';
 import { ReactComponent as ImgSVG } from '../assets/scrum-board.svg';
 import Button from './Interactive/Button';
 import Input from './Interactive/Input';
 import useForm from '../Hooks/useForm';
 import { createUser, loginUser } from '../store/auth/authActions';
+import { clearErrorAuth } from '../store/auth/auth';
 
 function Register() {
   const { error, loading } = useSelector((state) => state.auth);
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const location = useLocation();
   const username = useForm();
   const password = useForm();
 
@@ -39,6 +41,10 @@ function Register() {
   const backToLogin = () => {
     navigate('/login');
   };
+
+  useEffect(() => {
+    dispatch(clearErrorAuth());
+  }, [location]);
 
   return (
     <Container>

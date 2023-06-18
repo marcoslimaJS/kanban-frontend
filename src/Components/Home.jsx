@@ -27,9 +27,10 @@ function Home({ theme, setTheme }) {
   const [showModalDeleteBoard, setShowModalDeleteBoard] = useState(false);
   const [showModalCreateTask, setShowModalCreateTask] = useState(false);
   const [showModalLayout, setShowModalLayout] = useState(false);
+  const userId = localStorage.getItem('userId');
   const dataBoard = {
     name: board?.name,
-    userId: localStorage.getItem('userId'),
+    userId,
     type: 'board',
   };
 

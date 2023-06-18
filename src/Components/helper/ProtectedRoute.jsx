@@ -7,9 +7,9 @@ import { useSelector } from 'react-redux';
 function ProtectedRoute({ children }) {
   const token = localStorage.getItem('token');
   const userId = localStorage.getItem('userId');
-  const { user } = useSelector((state) => state.auth);
+  const { auth: { user }, boards: { listBoards } } = useSelector((state) => state);
 
-  return user && token && userId ? children : <Navigate to="/login" />;
+  return (user && listBoards) && (token && userId) ? children : <Navigate to="/login" />;
 }
 
 ProtectedRoute.propTypes = {

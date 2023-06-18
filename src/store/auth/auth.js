@@ -19,6 +19,11 @@ const authSlice = createSlice({
     clearErrorAuth: (state) => {
       state.error = null;
     },
+    clearUserData: (state) => {
+      state.user = null;
+      state.loading = false;
+      state.error = null;
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -63,6 +68,8 @@ const authSlice = createSlice({
       .addCase(getUserData.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload.error;
+        localStorage.removeItem('token');
+        localStorage.removeItem('userId');
       })
       .addCase(updateUserData.pending, (state) => {
         state.error = null;
@@ -82,4 +89,4 @@ const authSlice = createSlice({
 
 export default authSlice.reducer;
 
-export const { clearErrorAuth } = authSlice.actions;
+export const { clearErrorAuth, clearUserData } = authSlice.actions;

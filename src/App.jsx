@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import styled, { ThemeProvider } from 'styled-components';
-import { Routes, Route, useNavigate, useLocation } from 'react-router-dom';
+import { Routes, Route, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import light from './styles/light';
 import GlobalStyle from './styles/global';
@@ -15,7 +15,7 @@ import { getUserData } from './store/auth/authActions';
 function App() {
   const [theme, setTheme] = useState(light);
   const { user } = useSelector((state) => state.auth);
-  const { refresh } = useSelector((state) => state.boards);
+  const { refresh, listBoards } = useSelector((state) => state.boards);
   const [loadingAutoLogin, setLoadingAutoLogin] = useState(false);
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -23,7 +23,7 @@ function App() {
   const token = localStorage.getItem('token');
   const userId = localStorage.getItem('userId');
 
-  // AutoLogin baseado nos boards do usuario
+  // AutoLogin
   useEffect(() => {
     const autoLogin = async () => {
       setLoadingAutoLogin(true);
@@ -38,10 +38,10 @@ function App() {
 
   // Redirecionar para a Home caso esteja logado
   useEffect(() => {
-    if (user) {
+    if (user && listBoards) {
       navigate('/');
     }
-  }, [user]);
+  }, [user, listBoards]);
 
   return (
     <ThemeProvider theme={theme}>

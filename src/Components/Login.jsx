@@ -10,6 +10,7 @@ import Input from './Interactive/Input';
 import useForm from '../Hooks/useForm';
 import { loginUser } from '../store/auth/authActions';
 import { clearErrorAuth } from '../store/auth/auth';
+import { getAllBoards } from '../store/board/boardsActions';
 
 function Login() {
   const { error, loading } = useSelector((state) => state.auth);
@@ -20,14 +21,17 @@ function Login() {
   const username = useForm();
   const password = useForm();
 
-  const handleLogin = (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
     const usernameValidate = username.validate();
     const passwordValidate = password.validate();
     if (usernameValidate && passwordValidate) {
-      dispatch(
+      const response = await dispatch(
         loginUser({ username: username.value, password: password.value }),
       );
+      if (response.meta.requestStatus === 'fulfilled') {
+        dispatch(getAllBoards(response.payload.userId));
+      }
     }
   };
 
